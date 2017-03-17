@@ -9,7 +9,13 @@ namespace Game
 		protected float health;
 		protected float maxHealth;
 		protected float damage;
+
 		protected float speed;
+		protected float walkingSpeed;
+		protected float sprintingSpeed;
+		protected bool isSprinting;
+		protected bool isJumping;
+
 		protected bool hostile;
 		protected GameObject model;
 
@@ -23,6 +29,22 @@ namespace Game
 		protected bool isDead()
 		{
 			return health < 0;
+		}
+
+
+		protected void Update()
+		{
+			base.Update();
+			Move();
+		}
+
+
+		protected virtual void Move()
+		{
+			speed = isSprinting == false ? walkingSpeed : sprintingSpeed;
+
+
+
 		}
 
 	}
