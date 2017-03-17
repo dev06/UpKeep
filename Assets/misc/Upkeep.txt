@@ -1,0 +1,37 @@
+Upkeep a1.0 , March 16th 2017, Design
+
+-Singleplayer / Multiplayer 
+-Survivial 
+-Open World
+-Crafting 
+-Resource Gathering 
+-Base Building
+-Zombie Survival
+
+-Entity (Any Item in the game) 
+	
+	- Mob
+		: health
+		: speed
+		: hostile
+		- Player
+		- Enemy
+		- NPC
+
+	- Weapons
+		: name
+		: id
+		: damage
+		: health
+		: description
+		- Guns 
+		- Clubs
+		- Ammo
+		
+	- Objects
+		: id 
+		: name 
+		: description
+		- Dynamic / Static GameObjects
+		- Interactable 
+		
