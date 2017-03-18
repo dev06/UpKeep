@@ -14,8 +14,6 @@ namespace Game
 		private float rotateX = 0;
 		private float mouseXSensitvity;
 		private float mouseYSensitvity;
-		private float jumpForce;
-		private float jumpingHeight;
 
 
 		private void Start()
@@ -41,6 +39,11 @@ namespace Game
 			base.Update();
 			Look();
 			Jump();
+		}
+
+		private void FixedUpdate()
+		{
+			Move();
 		}
 
 
@@ -73,25 +76,13 @@ namespace Game
 
 		protected void Jump()
 		{
-			if (Input.GetKey(KeyCode.Space) && !isJumping) {
-				jumpForce = -jumpingHeight;
-				isJumping = true;
-				StopCoroutine("StartJump");
-				StartCoroutine("StartJump");
-			}
-		}
-
-		private IEnumerator StartJump()
-		{
-			while (jumpForce < jumpingHeight)
+			if (Input.GetKey(KeyCode.Space) && !isJumping)
 			{
-				jumpForce += Time.deltaTime * 5.0f;
-				yield return new WaitForSeconds(Time.deltaTime);
+				PrepareJump();
 			}
-
-			isJumping = false;
-
 		}
+
+
 
 	}
 }
