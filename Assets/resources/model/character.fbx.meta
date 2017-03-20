@@ -1,83 +1,49 @@
 fileFormatVersion: 2
 guid: cf4ac1dd473cdd3438cba126be328296
-timeCreated: 1489788905
+timeCreated: 1489864871
 licenseType: Free
 ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
-    100000: Armature
-    100002: Bone
-    100004: Bone.001
-    100006: Bone.002
-    100008: Bone.002_end
-    100010: Bone.003
-    100012: Bone.004
-    100014: Bone.004_end
-    100016: Bone.005
-    100018: Bone.006
-    100020: Bone.006_end
-    100022: Bone.007
-    100024: Bone.008
-    100026: Bone.009
-    100028: Bone.009_end
-    100030: Bone.010
-    100032: Bone.010_end
-    100034: //RootNode
-    100036: Cube
-    100038: BackBone
-    100040: Head
-    100042: Head_end
-    100044: LeftForearm
-    100046: LeftForearm_end
-    100048: LeftLeg
-    100050: LeftLeg_end
-    100052: LeftShoulder
-    100054: LeftTigh
-    100056: Neck
-    100058: RightForearm
-    100060: RightForearm_end
-    100062: RightLeg
-    100064: RightLeg_end
-    100066: RightShoulder
-    100068: RightTigh
-    400000: Armature
-    400002: Bone
-    400004: Bone.001
-    400006: Bone.002
-    400008: Bone.002_end
-    400010: Bone.003
-    400012: Bone.004
-    400014: Bone.004_end
-    400016: Bone.005
-    400018: Bone.006
-    400020: Bone.006_end
-    400022: Bone.007
-    400024: Bone.008
-    400026: Bone.009
-    400028: Bone.009_end
-    400030: Bone.010
-    400032: Bone.010_end
-    400034: //RootNode
-    400036: Cube
-    400038: BackBone
-    400040: Head
-    400042: Head_end
-    400044: LeftForearm
-    400046: LeftForearm_end
-    400048: LeftLeg
-    400050: LeftLeg_end
-    400052: LeftShoulder
-    400054: LeftTigh
-    400056: Neck
-    400058: RightForearm
-    400060: RightForearm_end
-    400062: RightLeg
-    400064: RightLeg_end
-    400066: RightShoulder
-    400068: RightTigh
-    4300000: Cube
+    100000: BackBone
+    100002: character
+    100004: //RootNode
+    100006: Head
+    100008: Head_end
+    100010: LeftArm
+    100012: LeftArm_end
+    100014: LeftLeg
+    100016: LeftLeg_end
+    100018: LeftShoulder
+    100020: LeftTigh
+    100022: RighShoulder
+    100024: RightArm
+    100026: RightArm_end
+    100028: RightLeg
+    100030: RightLeg_end
+    100032: RightTigh
+    100034: Skin
+    400000: BackBone
+    400002: //RootNode
+    400004: character
+    400006: Head
+    400008: Head_end
+    400010: LeftArm
+    400012: LeftArm_end
+    400014: LeftLeg
+    400016: LeftLeg_end
+    400018: LeftShoulder
+    400020: LeftTigh
+    400022: RighShoulder
+    400024: RightArm
+    400026: RightArm_end
+    400028: RightLeg
+    400030: RightLeg_end
+    400032: RightTigh
+    400034: Skin
+    4300000: Skin
     9500000: //RootNode
-    13700000: Cube
+    13700000: Skin
   materials:
     importMaterials: 1
     materialName: 0
@@ -104,13 +70,13 @@ ModelImporter:
     lODScreenPercentages: []
     globalScale: 1
     meshCompression: 0
-    addColliders: 1
+    addColliders: 0
     importBlendShapes: 1
-    swapUVChannels: 1
+    swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
     optimizeMeshForGPU: 1
-    keepQuads: 1
+    keepQuads: 0
     weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
@@ -120,7 +86,7 @@ ModelImporter:
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
-    tangentImportMode: 0
+    tangentImportMode: 3
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
