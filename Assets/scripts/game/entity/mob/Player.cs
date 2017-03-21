@@ -9,12 +9,14 @@ namespace Game
 	public class Player : Mob
 	{
 
+		private CameraBob cameraBob;
 		private CharacterController cc;
 		private float rotateY = 0;
 		private float rotateX = 0;
 		private float mouseXSensitvity;
 		private float mouseYSensitvity;
 		private Vector3 movement;
+
 
 
 		private void Start()
@@ -27,12 +29,18 @@ namespace Game
 		private void Initialize()
 		{
 			cc = GetComponent<CharacterController>();
+			cameraBob = Camera.main.GetComponent<CameraBob>();
 			animator = GetComponent<Animator>();
 			movement = Vector3.zero;
 			damage = 30.0f;
 			damageRate = 1.0f;
+
 			maxHealth = 100.0f;
 			health = maxHealth;
+
+			maxStamina = 100.0f;
+			stamina = maxStamina;
+
 			mobActionState = MobActionState.IDLE;
 			walkingSpeed = 5.0f;
 			sprintingSpeed = 10.0f;
@@ -52,6 +60,7 @@ namespace Game
 			Jump();
 			Move();
 			Punch();
+			//	Debug.Log(Mathf.PingPong(Time.time, 6) - 3.0f);
 
 		}
 
@@ -64,37 +73,30 @@ namespace Game
 		protected override void Move()
 		{
 			base.Move();
-			isSprinting = Input.GetKey(KeyCode.LeftShift);
+			isSprinting = (Stamina > 0 && Input.GetKey(KeyCode.LeftShift));
 			float x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
 			float z = Input.GetAxis("Vertical") * Time.deltaTime * speed;
-
 			Vector3 force = new Vector3(x, jumpForce * Physics.gravity.y * Time.deltaTime, z);
 			movement = force;
-
 			force = transform.rotation * force;
+			if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
+			{
+				cameraBob.Bob(1.0f);
+			}
 			cc.Move(force);
 
 		}
 
-		float rotateXVel;
-		float rotateYVel;
 		protected void Look()
 		{
 			rotateX = Input.GetAxis("Mouse X") *  mouseXSensitvity;
 
-
 			transform.Rotate(0, rotateX, 0);
-
 
 			rotateY -= Input.GetAxis("Mouse Y") * mouseYSensitvity;
 			rotateY = Mathf.Clamp(rotateY, -50, 50);
 
-
 			Camera.main.transform.localRotation = Quaternion.Euler(rotateY, 0, 0);
-
-
-
-
 		}
 
 

@@ -15,6 +15,9 @@ namespace Game
 
 		protected float health;
 		protected float maxHealth;
+		protected float stamina;
+		protected float maxStamina;
+
 		protected float damage;
 
 		protected float speed;
@@ -59,6 +62,8 @@ namespace Game
 		protected virtual void Move()
 		{
 			speed = isSprinting == false ? walkingSpeed : sprintingSpeed;
+			Stamina = isSprinting ? Stamina - Time.deltaTime * 5.0f : (Stamina < 100) ? Stamina + Time.deltaTime * 2.0f : Stamina;
+
 			UpdateMobActionState();
 
 		}
@@ -89,13 +94,14 @@ namespace Game
 		public void DoDamage(Mob toMob, Mob other)
 		{
 
-			if (toMob.isDead())
+
+			toMob.Health -= other.Damage;
+			if (toMob.Health <= 0 )
 			{
 				Destroy(toMob.gameObject);
-			} else
-			{
-				toMob.Health -= other.Damage;
 			}
+
+
 
 		}
 
@@ -165,6 +171,25 @@ namespace Game
 		{
 			get {return health; }
 			set { if (health >= 0) { health = value; } }
+		}
+
+		public float MaxHealth
+		{
+			get {return maxHealth; }
+
+		}
+
+
+		public float Stamina
+		{
+			get {return stamina; }
+			set { if ((int)stamina >= 0) { stamina = value; } }
+		}
+
+		public float MaxStamina
+		{
+			get {return maxStamina; }
+
 		}
 
 		public float Damage
