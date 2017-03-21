@@ -48,7 +48,7 @@ namespace Game
 			base.Move();
 
 
-			if (Vector3.Distance(transform.position, target.position) < 10.0f)
+			if (Vector3.Distance(transform.position, target.position) < 30.0f)
 			{
 				if (Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)
 				{
@@ -62,42 +62,6 @@ namespace Game
 				agent.Stop();
 				animator.SetBool("playerInProximity", false);
 			}
-
-
-			// if (agent.remainingDistance < 10.0f)
-			// {
-			// 	agent.Resume();
-
-			// } else
-			// {
-			// 	animator.SetBool("playerInProximity", false);
-			// 	agent.Stop();
-
-			// }
-
-			// Debug.Log(agent.remainingDistance);
-
-			// if (Vector3.Distance(transform.position, target.position) < 10.0f && Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)
-			// {
-
-
-
-
-			// 	//transform.LookAt(target.position);
-			// 	//transform.rotation = Quaternion.Euler(new Vector3(0 , transform.eulerAngles.y, 0));
-			// 	//movement.x = transform.forward.x * Time.deltaTime * speed;
-			// 	//movement.z = transform.forward.z * Time.deltaTime * speed;
-
-
-
-
-			// } else
-			// {
-			// 	//movement.x = 0;
-			// 	//movement.z = 0;
-
-			// }
-			// cc.Move(movement);
 		}
 
 	}

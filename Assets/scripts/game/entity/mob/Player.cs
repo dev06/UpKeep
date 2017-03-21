@@ -76,7 +76,8 @@ namespace Game
 
 		}
 
-
+		float rotateXVel;
+		float rotateYVel;
 		protected void Look()
 		{
 			rotateX = Input.GetAxis("Mouse X") *  mouseXSensitvity;
@@ -87,6 +88,8 @@ namespace Game
 
 			rotateY -= Input.GetAxis("Mouse Y") * mouseYSensitvity;
 			rotateY = Mathf.Clamp(rotateY, -50, 50);
+
+
 			Camera.main.transform.localRotation = Quaternion.Euler(rotateY, 0, 0);
 
 
