@@ -27,12 +27,12 @@ namespace Game
 			animator = GetComponent<Animator>();
 			cc = GetComponent<CharacterController>();
 			agent = GetComponent<NavMeshAgent>();
+
+			mobChar.SetAll(5.0f, 10.0f, 100.0f, 100.0f, 10.0f);
 			maxHealth = 100.0f;
 			health = maxHealth;
 			movement = Vector3.zero;
-			walkingSpeed = 3.0f;
 			damageRate = 1.0f;
-			damage = 1.0f;
 		}
 
 
@@ -42,12 +42,11 @@ namespace Game
 			Move();
 		}
 
-		bool b;
 		protected override void Move()
 		{
 			base.Move();
 
-
+			if (target == null) return;
 			if (Vector3.Distance(transform.position, target.position) < 30.0f)
 			{
 				if (Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)

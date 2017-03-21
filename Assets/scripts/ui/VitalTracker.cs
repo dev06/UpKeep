@@ -32,15 +32,19 @@ namespace UI
 			{
 				case TrackingVital.HEALTH:
 				{
-					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, mob.Health / mob.MaxHealth, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * mob.MaxHealth) + " % ";
+					float health = mob.GetFloat("Health");
+					float maxHealth = mob.GetFloat("MaxHealth");
+					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, health / maxHealth, ref velocity, .1f);
+					text.text = (int)(foreground.fillAmount * maxHealth) + " % ";
 					break;
 				}
 
 				case TrackingVital.STAMINA:
 				{
-					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, mob.Stamina / mob.MaxStamina, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * mob.MaxStamina) + " % ";
+					float stamina = mob.GetFloat("Stamina");
+					float maxStamina = mob.GetFloat("MaxStamina");
+					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, stamina / maxStamina, ref velocity, .1f);
+					text.text = (int)(foreground.fillAmount * maxStamina) + " % ";
 					break;
 				}
 			}

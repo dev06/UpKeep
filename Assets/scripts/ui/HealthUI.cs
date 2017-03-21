@@ -19,7 +19,10 @@ namespace UI
 
 		void FixedUpdate ()
 		{
-			xScale = Mathf.SmoothDamp(xScale, (mob.Health * defaultScale) / mob.MaxHealth, ref velocity, .05f);
+			if (mob == null || Camera.main == null) return;
+			float health = mob.GetFloat("Health");
+			float maxHealth = mob.GetFloat("MaxHealth");
+			xScale = Mathf.SmoothDamp(xScale, (health * defaultScale) / maxHealth, ref velocity, .05f);
 			foregroundQuad.transform.localScale = new Vector3(xScale , foregroundQuad.transform.localScale.y, foregroundQuad.transform.localScale.z);
 			transform.LookAt(Camera.main.transform.position);
 		}

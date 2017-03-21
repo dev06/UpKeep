@@ -13,6 +13,9 @@ namespace Game
 			IDLE
 		}
 
+		protected MobCharacteristics mobChar;
+
+
 		protected float health;
 		protected float maxHealth;
 		protected float stamina;
@@ -41,6 +44,7 @@ namespace Game
 		protected void Start()
 		{
 			base.Start();
+			mobChar = new MobCharacteristics();
 
 		}
 
@@ -61,8 +65,8 @@ namespace Game
 
 		protected virtual void Move()
 		{
-			speed = isSprinting == false ? walkingSpeed : sprintingSpeed;
-			Stamina = isSprinting ? Stamina - Time.deltaTime * 5.0f : (Stamina < 100) ? Stamina + Time.deltaTime * 2.0f : Stamina;
+
+			//Stamina = isSprinting ? Stamina - Time.deltaTime * 5.0f : (Stamina < 100) ? Stamina + Time.deltaTime * 2.0f : Stamina;
 
 			UpdateMobActionState();
 
@@ -94,9 +98,10 @@ namespace Game
 		public void DoDamage(Mob toMob, Mob other)
 		{
 
+			toMob.SetFloat("Health", toMob.GetFloat("Health") - other.GetFloat("MeleeDamage"));
 
-			toMob.Health -= other.Damage;
-			if (toMob.Health <= 0 )
+			// toMob.Health -= other.Damage;
+			if (toMob.GetFloat("Health") <= 0 )
 			{
 				Destroy(toMob.gameObject);
 			}
@@ -165,6 +170,16 @@ namespace Game
 
 		}
 
+
+		public float GetFloat(string id)
+		{
+			return mobChar.GetFloat(id);
+		}
+
+		public void SetFloat(string id, float value)
+		{
+			mobChar.SetFloat(id, value);
+		}
 
 
 		public float Health

@@ -32,6 +32,10 @@ namespace Game
 			cameraBob = Camera.main.GetComponent<CameraBob>();
 			animator = GetComponent<Animator>();
 			movement = Vector3.zero;
+
+
+			mobChar.SetAll(5.0f, 10.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f);
+
 			damage = 30.0f;
 			damageRate = 1.0f;
 
@@ -42,8 +46,8 @@ namespace Game
 			stamina = maxStamina;
 
 			mobActionState = MobActionState.IDLE;
-			walkingSpeed = 5.0f;
-			sprintingSpeed = 10.0f;
+			walkingSpeed = GetFloat("WalkingSpeed");
+			sprintingSpeed = GetFloat("SprintingSpeed");
 			mouseXSensitvity = 2.0f;
 			mouseYSensitvity = 2.0f;
 			jumpingHeight = .8f;
@@ -60,8 +64,6 @@ namespace Game
 			Jump();
 			Move();
 			Punch();
-			//	Debug.Log(Mathf.PingPong(Time.time, 6) - 3.0f);
-
 		}
 
 		private void FixedUpdate()
@@ -73,12 +75,15 @@ namespace Game
 		protected override void Move()
 		{
 			base.Move();
-			isSprinting = (Stamina > 0 && Input.GetKey(KeyCode.LeftShift));
+			speed = isSprinting == false ? walkingSpeed : sprintingSpeed;
 			float x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
 			float z = Input.GetAxis("Vertical") * Time.deltaTime * speed;
 			Vector3 force = new Vector3(x, jumpForce * Physics.gravity.y * Time.deltaTime, z);
 			movement = force;
 			force = transform.rotation * force;
+
+			UpdateStamina();
+
 			if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
 			{
 				cameraBob.Bob(1.0f);
@@ -142,6 +147,30 @@ namespace Game
 			{
 				animator.SetBool("punch", false);
 			}
+		}
+
+		private void UpdateStamina()
+		{
+			float stamina = GetFloat("Stamina");
+			float staminaDep = GetFloat("StaminaDepletionRate");
+			float staminaRep = GetFloat("StaminaRepletionRate");
+
+			if (isSprinting)
+			{
+				if (stamina > 0)
+				{
+					SetFloat("Stamina", stamina - Time.deltaTime * staminaDep);
+				}
+			} else
+			{
+
+				if (stamina < GetFloat("MaxStamina") && !Input.GetKey(KeyCode.LeftShift))
+				{
+					SetFloat("Stamina", stamina + Time.deltaTime * staminaRep);
+				}
+			}
+
+			isSprinting = (stamina > 0 && Input.GetKey(KeyCode.LeftShift));
 		}
 
 
