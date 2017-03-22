@@ -34,7 +34,7 @@ namespace Game
 			movement = Vector3.zero;
 
 
-			mobChar.SetAll(5.0f, 10.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f);
+			mobChar.SetAll(3.0f, 5.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f);
 
 			damage = 30.0f;
 			damageRate = 1.0f;
