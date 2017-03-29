@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using system;
-
+using UpkeepInput;
 namespace Game
 {
 	[RequireComponent (typeof(CharacterController))]
@@ -34,7 +34,7 @@ namespace Game
 			movement = Vector3.zero;
 
 
-			mobChar.SetAll(3.0f, 5.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f);
+			mobChar.SetAll(3.0f, 5.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f, 100.0f, 100.0f);
 
 			damage = 30.0f;
 			damageRate = 1.0f;
@@ -72,6 +72,8 @@ namespace Game
 		}
 
 
+
+
 		protected override void Move()
 		{
 			base.Move();
@@ -83,6 +85,7 @@ namespace Game
 			force = transform.rotation * force;
 
 			UpdateStamina();
+			UpdateHunger();
 
 			if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
 			{
@@ -94,11 +97,11 @@ namespace Game
 
 		protected void Look()
 		{
-			rotateX = Input.GetAxis("Mouse X") *  mouseXSensitvity;
+			rotateX = GameInputManager.Instance.input.mouseX *  mouseXSensitvity;
 
 			transform.Rotate(0, rotateX, 0);
 
-			rotateY -= Input.GetAxis("Mouse Y") * mouseYSensitvity;
+			rotateY -= GameInputManager.Instance.input.mouseY * mouseYSensitvity;
 			rotateY = Mathf.Clamp(rotateY, -50, 50);
 
 			Camera.main.transform.localRotation = Quaternion.Euler(rotateY, 0, 0);
@@ -171,6 +174,21 @@ namespace Game
 			}
 
 			isSprinting = (stamina > 0 && Input.GetKey(KeyCode.LeftShift));
+		}
+
+
+		private void UpdateHunger()
+		{
+			float hunger = GetFloat("Hunger");
+			if (isSprinting)
+			{
+
+				SetFloat("Hunger", hunger > 0 ? (hunger - Time.deltaTime / 5.0f ) : 0);
+			}
+			else
+			{
+				SetFloat("Hunger", hunger > 0 ? (hunger - Time.deltaTime / 10.0f ) : 0);
+			}
 		}
 
 

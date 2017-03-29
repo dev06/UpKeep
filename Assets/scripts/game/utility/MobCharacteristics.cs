@@ -14,6 +14,8 @@ namespace Game
 		public float meleeDamage;
 		public float staminaDepletionRate;
 		public float staminaRepletionRate;
+		public float hunger;
+		public float thirst;
 
 
 		public MobCharacteristics()
@@ -34,6 +36,8 @@ namespace Game
 				case "MeleeDamage": return meleeDamage;
 				case "StaminaDepletionRate": return staminaDepletionRate;
 				case "StaminaRepletionRate": return staminaRepletionRate;
+				case "Hunger": return hunger;
+				case "Thirst": return thirst;
 			}
 
 			return -1;
@@ -53,6 +57,8 @@ namespace Game
 				case "MeleeDamage": meleeDamage = value; break;
 				case "StaminaDepletionRate": staminaDepletionRate = value; break;
 				case "StaminaRepletionRate": staminaRepletionRate = value; break;
+				case "Hunger": hunger = value; break;
+				case "Thirst": thirst = value; break;
 			}
 		}
 
@@ -62,7 +68,9 @@ namespace Game
 		                   float maxStamina = 0,
 		                   float meleeDamage = 0,
 		                   float staminaDepletionRate = 0,
-		                   float staminaRepletionRate = 0)
+		                   float staminaRepletionRate = 0,
+		                   float hunger = 0,
+		                   float thirst = 0)
 		{
 			this.walkingSpeed = walkingSpeed;
 			this.spritingSpeed = spritingSpeed;
@@ -71,6 +79,8 @@ namespace Game
 			this.meleeDamage = meleeDamage;
 			this.staminaRepletionRate = staminaRepletionRate;
 			this.staminaDepletionRate = staminaDepletionRate;
+			this.hunger = hunger;
+			this.thirst = thirst;
 			health = maxHealth;
 			stamina = maxStamina;
 		}

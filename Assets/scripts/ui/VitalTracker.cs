@@ -10,7 +10,9 @@ namespace UI
 		public enum TrackingVital
 		{
 			HEALTH,
-			STAMINA
+			STAMINA,
+			HUNGER,
+			THIRST
 		}
 
 		public Mob mob;
@@ -45,6 +47,21 @@ namespace UI
 					float maxStamina = mob.GetFloat("MaxStamina");
 					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, stamina / maxStamina, ref velocity, .1f);
 					text.text = (int)(foreground.fillAmount * maxStamina) + " % ";
+					break;
+				}
+
+				case TrackingVital.HUNGER:
+				{
+					float hunger = mob.GetFloat("Hunger");
+					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, hunger / 100.0f, ref velocity, .1f);
+					text.text = (int)(foreground.fillAmount * 100.0f) + " % ";
+					break;
+				}
+				case TrackingVital.THIRST:
+				{
+					float thirst = mob.GetFloat("Thrist");
+					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, thirst / 100.0f, ref velocity, .1f);
+					text.text = (int)(foreground.fillAmount * 100.0f) + " % ";
 					break;
 				}
 			}
