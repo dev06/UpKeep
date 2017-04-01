@@ -8,8 +8,8 @@ namespace UpkeepInput
 	{
 
 		private system.Cursor cursor;
-		public float mouseX;
-		public float mouseY;
+		public Vector2 look = Vector2.zero;
+		public  Vector2 move = Vector2.zero;
 
 		public GameInput()
 		{
@@ -21,16 +21,18 @@ namespace UpkeepInput
 		{
 			if (StateManager.Instance.state != StateManager.State.PAUSE)
 			{
-				mouseX = UnityEngine.Input.GetAxis("Mouse X");
-				mouseY = UnityEngine.Input.GetAxis("Mouse Y");
+				look.x = UnityEngine.Input.GetAxis("Mouse X");
+				look.y = UnityEngine.Input.GetAxis("Mouse Y");
+				move.x = UnityEngine.Input.GetAxis("Horizontal");
+				move.y = UnityEngine.Input.GetAxis("Vertical");
 
 				cursor.HideCursor();
 
 
 			} else
 			{
-				mouseX = 0;
-				mouseY = 0;
+				look.x = 0;
+				look.y = 0;
 				if (!cursor.isVisible)
 				{
 					cursor.ShowCursor();

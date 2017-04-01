@@ -15,6 +15,10 @@ namespace Game
 		private float rotateX = 0;
 		private float mouseXSensitvity;
 		private float mouseYSensitvity;
+		private float acceleration;
+		private float fallingTimer;
+		private float fallingDamageMultiplier = 2.0f;
+		private float fallingDamage;
 		private Vector3 movement;
 
 
@@ -60,10 +64,19 @@ namespace Game
 		private void Update()
 		{
 			base.Update();
-			Look();
-			Jump();
-			Move();
-			Punch();
+			if (!gameController.isGamePaused)
+			{
+				Look();
+				Jump();
+				Move();
+				Punch();
+				UpdateStamina();
+				UpdateHunger();
+				CheckForFallDamage();
+
+			}
+
+
 		}
 
 		private void FixedUpdate()
@@ -71,43 +84,79 @@ namespace Game
 
 		}
 
-
+		private bool IsAirborne()
+		{
+			return !cc.isGrounded;
+		}
 
 
 		protected override void Move()
 		{
 			base.Move();
 			speed = isSprinting == false ? walkingSpeed : sprintingSpeed;
-			float x = Input.GetAxis("Horizontal") * Time.deltaTime * speed;
-			float z = Input.GetAxis("Vertical") * Time.deltaTime * speed;
-			Vector3 force = new Vector3(x, jumpForce * Physics.gravity.y * Time.deltaTime, z);
+
+			float x = GameInputManager.Instance.input.move.x * Time.deltaTime * speed;
+			float z = GameInputManager.Instance.input.move.y * Time.deltaTime * speed;
+
+			Vector3 force = new Vector3(x, jumpForce * Physics.gravity.y * Time.deltaTime * acceleration, z);
 			movement = force;
+			acceleration = cc.isGrounded ? 1 : acceleration + Time.deltaTime;
 			force = transform.rotation * force;
 
-			UpdateStamina();
-			UpdateHunger();
 
 			if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
 			{
 				cameraBob.Bob(1.0f);
 			}
 			cc.Move(force);
+		}
 
+
+		protected void CheckForFallDamage()
+		{
+			IsAirborne();
+			if (IsAirborne())
+			{
+				fallingTimer += Time.deltaTime;
+
+				if (fallingTimer > 1.0f)
+				{
+					fallingDamage = (int)fallingTimer;
+				} else
+				{
+					fallingDamage = 0;
+				}
+
+			} else
+			{
+				SetFloat("Health", GetFloat("Health") - GetFallingDamage());
+				fallingTimer = 0;
+				fallingDamage = 0;
+			}
+
+		}
+
+		private float GetFallingDamage()
+		{
+			float damage = fallingDamage * fallingDamageMultiplier * acceleration;
+			return damage;
 		}
 
 		protected void Look()
 		{
-			rotateX = GameInputManager.Instance.input.mouseX *  mouseXSensitvity;
+			rotateX = GameInputManager.Instance.input.look.x *  mouseXSensitvity;
 
 			transform.Rotate(0, rotateX, 0);
 
-			rotateY -= GameInputManager.Instance.input.mouseY * mouseYSensitvity;
+			rotateY -= GameInputManager.Instance.input.look.y * mouseYSensitvity;
 			rotateY = Mathf.Clamp(rotateY, -50, 50);
 
 			Camera.main.transform.localRotation = Quaternion.Euler(rotateY, 0, 0);
 		}
 
-
+		/// <summary>
+		/// Updates the action the player is currently doing. Used for animations
+		/// </summary>
 		protected override void UpdateMobActionState()
 		{
 			base.UpdateMobActionState();
@@ -129,6 +178,9 @@ namespace Game
 			animator.SetBool("isWalking", mobActionState == MobActionState.WALK);
 		}
 
+		/// <summary>
+		/// Makes the player jump
+		/// </summary>
 		protected void Jump()
 		{
 			if (Input.GetKey(KeyCode.Space) && cc.isGrounded)
@@ -137,6 +189,9 @@ namespace Game
 			}
 		}
 
+		/// <summary>
+		/// Registers a punch
+		/// </summary>
 		protected void Punch()
 		{
 			if (Input.GetMouseButtonDown(0))
@@ -152,6 +207,9 @@ namespace Game
 			}
 		}
 
+		/// <summary>
+		/// Updates Player Stamina
+		/// </summary>
 		private void UpdateStamina()
 		{
 			float stamina = GetFloat("Stamina");
@@ -177,6 +235,9 @@ namespace Game
 		}
 
 
+		/// <summary>
+		/// Updates the player hunger when the player is sprinting or walking
+		/// </summary>
 		private void UpdateHunger()
 		{
 			float hunger = GetFloat("Hunger");
@@ -190,8 +251,6 @@ namespace Game
 				SetFloat("Hunger", hunger > 0 ? (hunger - Time.deltaTime / 10.0f ) : 0);
 			}
 		}
-
-
 
 
 		protected override void OnCollisionStay(Collision collision)

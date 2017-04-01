@@ -26,23 +26,27 @@ namespace Game
 
 		void Update ()
 		{
-
-			time += Time.deltaTime * daySpeed;
-			if (time > TotalHour)
+			if (GameController.Instance.isGamePaused == false)
 			{
-				Day++;
-				time = 0;
+				time += Time.deltaTime * daySpeed;
+				if (time > TotalHour)
+				{
+					Day++;
+					time = 0;
+				}
+
+
+				float intensity = Mathf.Abs(Mathf.Sin(time));
+
+
+
+
+				float rotation = ((int)(time * 360f) / TotalHour) - 90;
+				sunRotation.x = rotation;
+				Hour = time;
+				transform.rotation = Quaternion.Euler(sunRotation);
 			}
-
-
-
-			float rotation = ((int)(time * 360f) / TotalHour) - 90;
-			sunRotation.x = rotation;
-			Hour = time;
-			transform.rotation = Quaternion.Euler(sunRotation);
 		}
-
-
 	}
 
 }

@@ -39,29 +39,36 @@ namespace Game
 		void Update()
 		{
 			base.Update();
+
 			Move();
 		}
 
 		protected override void Move()
 		{
-			base.Move();
-
-			if (target == null) return;
-			if (Vector3.Distance(transform.position, target.position) < 30.0f)
+			if (!gameController.isGamePaused)
 			{
-				if (Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)
-				{
-					agent.Resume();
-					agent.SetDestination(target.position);
-				}
+				base.Move();
 
-				animator.SetBool("playerInProximity", true);
+				if (target == null) return;
+				if (Vector3.Distance(transform.position, target.position) < 30.0f)
+				{
+					if (Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)
+					{
+						agent.Resume();
+						agent.SetDestination(target.position);
+					}
+
+					animator.SetBool("playerInProximity", true);
+				} else
+				{
+					agent.Stop();
+					animator.SetBool("playerInProximity", false);
+				}
 			} else
 			{
 				agent.Stop();
 				animator.SetBool("playerInProximity", false);
 			}
 		}
-
 	}
 }

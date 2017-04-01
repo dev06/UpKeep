@@ -33,9 +33,12 @@ namespace Game
 		protected float jumpForce;
 		protected MobActionState mobActionState;
 		protected bool hostile;
+		protected bool canMove;
 		protected GameObject model;
 		protected Animator animator;
 		protected Mob other;
+		protected GameController gameController;
+
 
 		protected float damageTimer;
 		protected float damageRate;
@@ -45,6 +48,7 @@ namespace Game
 		{
 			base.Start();
 			mobChar = new MobCharacteristics();
+			gameController = FindObjectOfType<GameController>();
 
 		}
 
@@ -60,11 +64,14 @@ namespace Game
 		protected void Update()
 		{
 			base.Update();
+			canMove = StateManager.Instance.state != StateManager.State.PAUSE &&
+			          StateManager.Instance.state != StateManager.State.NONE;
 		}
 
 
 		protected virtual void Move()
 		{
+
 
 			//Stamina = isSprinting ? Stamina - Time.deltaTime * 5.0f : (Stamina < 100) ? Stamina + Time.deltaTime * 2.0f : Stamina;
 
