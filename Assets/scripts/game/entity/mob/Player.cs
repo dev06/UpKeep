@@ -9,6 +9,8 @@ namespace Game
 	public class Player : Mob
 	{
 
+		public ItemInHand itemInHand;
+		private CameraController cameraController;
 		private CameraBob cameraBob;
 		private CharacterController cc;
 		private float rotateY = 0;
@@ -37,7 +39,7 @@ namespace Game
 			animator = GetComponent<Animator>();
 			movement = Vector3.zero;
 
-
+			cameraController = FindObjectOfType<CameraController>();
 			mobChar.SetAll(3.0f, 5.0f, 100.0f, 100.0f, 10.0f, 3.0f, 2.0f, 100.0f, 100.0f);
 
 			damage = 30.0f;
@@ -73,7 +75,11 @@ namespace Game
 				UpdateStamina();
 				UpdateHunger();
 				CheckForFallDamage();
-
+				Aim();
+			} else
+			{
+				SetMobActionState(MobActionState.IDLE);
+				cc.Move( new Vector3(0, jumpForce * Physics.gravity.y * Time.deltaTime * acceleration, 0));
 			}
 
 
@@ -87,6 +93,11 @@ namespace Game
 		private bool IsAirborne()
 		{
 			return !cc.isGrounded;
+		}
+
+		private bool isMoving()
+		{
+			return Mathf.Abs(movement.x) > 0 || Mathf.Abs(movement.z) > 0;
 		}
 
 
@@ -103,11 +114,18 @@ namespace Game
 			acceleration = cc.isGrounded ? 1 : acceleration + Time.deltaTime;
 			force = transform.rotation * force;
 
-
-			if (Mathf.Abs(x) > 0 || Mathf.Abs(z) > 0)
+			if (cameraController != null)
 			{
-				cameraBob.Bob(1.0f);
+				if (isMoving())
+				{
+					cameraController.Bob(1.1f);
+				} else
+				{
+					cameraController.ResetBob();
+				}
 			}
+
+
 			cc.Move(force);
 		}
 
@@ -142,6 +160,7 @@ namespace Game
 			return damage;
 		}
 
+		public Transform back;
 		protected void Look()
 		{
 			rotateX = GameInputManager.Instance.input.look.x *  mouseXSensitvity;
@@ -151,7 +170,7 @@ namespace Game
 			rotateY -= GameInputManager.Instance.input.look.y * mouseYSensitvity;
 			rotateY = Mathf.Clamp(rotateY, -50, 50);
 
-			Camera.main.transform.localRotation = Quaternion.Euler(rotateY, 0, 0);
+			back.localRotation = Quaternion.Euler(rotateY + 90, 0, 0);
 		}
 
 		/// <summary>
@@ -168,10 +187,11 @@ namespace Game
 			} else if (isSprinting)
 			{
 				SetMobActionState(MobActionState.SPRINT);
-				animator.speed = 6;
+				animator.speed = 4;
 			} else
 			{
 				SetMobActionState(MobActionState.IDLE);
+				animator.speed = 1;
 			}
 
 
@@ -189,21 +209,99 @@ namespace Game
 			}
 		}
 
+		private void Aim()
+		{
+
+			if (itemInHand != null)
+			{
+				if (itemInHand.itemType == ItemType.Weapon)
+				{
+					if (!isMoving() && Input.GetMouseButton(1))
+					{
+						animator.SetBool("isWalkingAndAiming", false);
+						animator.SetBool("isAiming", true);
+					} else
+					{
+						if (Input.GetMouseButton(1))
+						{
+							if (!isMoving())
+							{
+								animator.SetBool("isAiming", true);
+							} else
+							{
+
+								animator.SetBool("isWalkingAndAiming", true);
+							}
+						} else
+						{
+							animator.SetBool("isAiming", false);
+							animator.SetBool("isWalkingAndAiming", false);
+						}
+					}
+
+				}
+			}
+
+
+		}
+
 		/// <summary>
 		/// Registers a punch
 		/// </summary>
 		protected void Punch()
 		{
-			if (Input.GetMouseButtonDown(0))
+			if (StateManager.Instance.state != StateManager.State.INVENTORY)
 			{
-				animator.SetBool("punch", true);
-				if (other != null)
+
+				if (Input.GetMouseButtonDown(0))
 				{
-					DoDamage(other, this);
+					if (itemInHand.itemType == ItemType.None)
+					{
+						Ray ray = new Ray(transform.position, transform.forward);
+						RaycastHit hitInfo;
+						if (Physics.Raycast(ray.origin, transform.forward, out hitInfo, 1))
+						{
+							GameObject hitObject = hitInfo.transform.gameObject;
+							if (hitObject.GetComponent<Mob>() != null)
+							{
+								Mob mob = (Mob)hitObject.GetComponent<Mob>();
+								mob.DoDamage(10); // Does damage to zombie. Currently hard coded.
+							}
+						}
+
+						if (mobActionState == MobActionState.WALK)
+						{
+							animator.SetBool("isWalkingAndPunching", true);
+						} else
+						{
+							animator.SetBool("punch", true);
+
+						}
+
+						if (other != null)
+						{
+							DoDamage(other, this);
+						}
+					} else
+					{
+						Ray ray = new Ray(transform.position, cameraController.camera.transform.forward);
+						RaycastHit hitInfo;
+						if (Physics.Raycast(ray.origin, cameraController.camera.transform.forward, out hitInfo, 100))
+						{
+							GameObject hitObject = hitInfo.transform.gameObject;
+							if (hitObject.GetComponent<Mob>() != null)
+							{
+								Mob mob = (Mob)hitObject.GetComponent<Mob>();
+								mob.DoDamage(100); // Does damage to zombie. Currently hard coded.
+							}
+						}
+					}
+				} else
+				{
+					animator.SetBool("punch", false);
+					animator.SetBool("isWalkingAndPunching", false);
 				}
-			} else
-			{
-				animator.SetBool("punch", false);
+
 			}
 		}
 
@@ -244,7 +342,7 @@ namespace Game
 			if (isSprinting)
 			{
 
-				SetFloat("Hunger", hunger > 0 ? (hunger - Time.deltaTime / 5.0f ) : 0);
+				SetFloat("Hunger", hunger > 0 ? (hunger - Time.deltaTime / 2.0f ) : 0);
 			}
 			else
 			{
@@ -269,6 +367,7 @@ namespace Game
 					if (damageTimer > damageRate)
 					{
 						DoDamage(this, mob);
+
 						//Health -= mob.Damage;
 						damageTimer = 0;
 					}

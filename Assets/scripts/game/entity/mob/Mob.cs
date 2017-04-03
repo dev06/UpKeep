@@ -66,17 +66,14 @@ namespace Game
 			base.Update();
 			canMove = StateManager.Instance.state != StateManager.State.PAUSE &&
 			          StateManager.Instance.state != StateManager.State.NONE;
+
+			UpdateMobActionState();
 		}
 
 
 		protected virtual void Move()
 		{
-
-
 			//Stamina = isSprinting ? Stamina - Time.deltaTime * 5.0f : (Stamina < 100) ? Stamina + Time.deltaTime * 2.0f : Stamina;
-
-			UpdateMobActionState();
-
 		}
 
 
@@ -112,9 +109,16 @@ namespace Game
 			{
 				Destroy(toMob.gameObject);
 			}
+		}
 
 
-
+		public void DoDamage(float damage)
+		{
+			SetFloat("Health", GetFloat("Health") - damage);
+			if (GetFloat("Health") <= 0)
+			{
+				Destroy(gameObject);
+			}
 		}
 
 

@@ -12,7 +12,7 @@ namespace UpkeepInput
 		public enum ButtonId
 		{
 			RESUME,
-			QUIT
+			QUIT,
 		}
 
 		public ButtonId buttonId;
@@ -47,6 +47,7 @@ namespace UpkeepInput
 
 		private void RegisterClick()
 		{
+			base.RegisterClick();
 
 			switch (buttonId)
 			{

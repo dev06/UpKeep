@@ -22,6 +22,7 @@ namespace Game
 		{
 			sunRotation = Vector3.zero;
 			TotalDay = TotalHour;
+			time = TotalHour / 2f;
 		}
 
 		void Update ()

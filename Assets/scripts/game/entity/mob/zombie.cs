@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Game
 {
-
+	[RequireComponent (typeof(CharacterController),  typeof(NavMeshAgent))]
 	public class zombie : Mob
 	{
 
@@ -39,35 +39,42 @@ namespace Game
 		void Update()
 		{
 			base.Update();
-
 			Move();
 		}
 
 		protected override void Move()
 		{
+
 			if (!gameController.isGamePaused)
 			{
 				base.Move();
-
-				if (target == null) return;
-				if (Vector3.Distance(transform.position, target.position) < 30.0f)
+				float distance = Vector3.Distance(transform.position, target.position);
+				if (distance < 10)
 				{
-					if (Vector3.Distance(transform.position, target.position) > agent.stoppingDistance)
+					animator.SetBool("isWalking", true);
+					agent.SetDestination(target.position);
+					agent.Resume();
+
+					if (distance < 2)
 					{
-						agent.Resume();
-						agent.SetDestination(target.position);
+						Ray ray = new Ray(transform.position, transform.forward);
+						RaycastHit hit;
+						if (Physics.Raycast(ray.origin, transform.forward, out hit, 1))
+						{
+							GameObject hitObject = hit.transform.gameObject;
+							if (hitObject.GetComponent<Mob>() != null)
+							{
+								Mob mob = (Mob)hitObject.GetComponent<Mob>();
+								mob.SetFloat("Health", mob.GetFloat("Health") - (GetFloat("MeleeDamage") * Time.deltaTime));
+							}
+						}
 					}
 
-					animator.SetBool("playerInProximity", true);
 				} else
 				{
+					animator.SetBool("isWalking", false);
 					agent.Stop();
-					animator.SetBool("playerInProximity", false);
 				}
-			} else
-			{
-				agent.Stop();
-				animator.SetBool("playerInProximity", false);
 			}
 		}
 	}

@@ -49,6 +49,11 @@ namespace UpkeepInput
 		{
 
 		}
+
+		public virtual void RegisterClick()
+		{
+
+		}
 	}
 
 }

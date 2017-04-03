@@ -15,6 +15,7 @@ namespace Game
 			NONE,
 			GAME,
 			PAUSE,
+			INVENTORY,
 		}
 
 		public static StateManager Instance;

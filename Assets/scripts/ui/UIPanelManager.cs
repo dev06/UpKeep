@@ -16,11 +16,14 @@ namespace UI
 
 		private GameObject pausePanel;
 		private GameObject hudPanel;
+		private GameObject inventoryPanel;
+
 
 		public enum ActivePanel
 		{
 			NONE,
 			PAUSE,
+			INVENTORY,
 			HUD,
 		}
 
@@ -46,6 +49,7 @@ namespace UI
 
 			pausePanel = transform.FindChild("PausePanel").gameObject;
 			hudPanel = transform.FindChild("HUD").gameObject;
+			inventoryPanel = transform.FindChild("Inventory").gameObject;
 
 		}
 
@@ -77,6 +81,11 @@ namespace UI
 				case StateManager.State.GAME:
 				{
 					SetPanelActive(hudPanel, true);
+					break;
+				}
+				case StateManager.State.INVENTORY:
+				{
+					SetPanelActive(inventoryPanel, true);
 					break;
 				}
 			}
