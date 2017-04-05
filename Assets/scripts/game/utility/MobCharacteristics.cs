@@ -48,8 +48,8 @@ namespace Game
 		{
 			switch (id)
 			{
-				case "Health" : health = health > 0 ? value : 0 ; break;
-				case "Stamina" : stamina = stamina > 0 ? value : 0; break;
+				case "Health" : health = value ; break;
+				case "Stamina" : stamina = value; break;
 				case "WalkingSpeed": walkingSpeed = value; break;
 				case "SprintingSpeed": spritingSpeed = value; break;
 				case "MaxHealth": maxHealth = value; break;
@@ -83,6 +83,12 @@ namespace Game
 			this.thirst = thirst;
 			health = maxHealth;
 			stamina = maxStamina;
+		}
+
+
+		public void SetHealth(float health)
+		{
+			this.health = health;
 		}
 	}
 }

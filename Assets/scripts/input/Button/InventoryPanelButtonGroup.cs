@@ -4,7 +4,7 @@ using Game;
 using system;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-
+using UI;
 
 namespace UpkeepInput
 {
@@ -52,31 +52,23 @@ namespace UpkeepInput
 			{
 				case ButtonId.EQUIP:
 				{
-					if (EventManager.OnUseItem != null)
+
+					if (Slot.selectedSlot != null)
 					{
-						if (InventoryManager.Instance.selectedSlot != null)
-						{
-							EventManager.OnUseItem(InventoryManager.Instance.selectedSlot.GetSlotItem());
-						}
+						ItemManager.UseItem(Slot.selectedSlot.item);
 					}
 					break;
 				}
 
 				case ButtonId.DROP:
 				{
-
-					if (EventManager.OnDropItem != null)
+					if (Slot.selectedSlot != null)
 					{
-						if (InventoryManager.Instance.selectedSlot != null)
-						{
-							EventManager.OnDropItem(InventoryManager.Instance.selectedSlot.GetSlotItem());
-						}
+						ItemManager.DropItem(Slot.selectedSlot.item);
 					}
 					break;
 				}
 			}
 		}
-
 	}
-
 }

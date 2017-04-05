@@ -5,19 +5,21 @@ using Game;
 
 namespace UI
 {
+	[RequireComponent (typeof(CanvasGroup))]
 	public class InventoryActionContainer : MonoBehaviour {
 
-		private GameObject container;
+		private CanvasGroup canvasGroup;
 
 		void OnEnable()
 		{
 			EventManager.OnSlotSelect += OnSlotSelect;
+			EventManager.OnUpdateInventoryUI += OnUpdateInventoryUI;
 		}
 
 		void OnDisable()
 		{
 			EventManager.OnSlotSelect -= OnSlotSelect;
-			InventoryManager.Instance.selectedSlot = null;
+			EventManager.OnUpdateInventoryUI -= OnUpdateInventoryUI;
 			Hide();
 		}
 
@@ -25,23 +27,46 @@ namespace UI
 
 		void Start ()
 		{
-			container = transform.GetChild(0).gameObject;
+			canvasGroup = GetComponent<CanvasGroup>();
 			Hide();
-		}
-
-		void Update ()
-		{
-
 		}
 
 		void OnSlotSelect(Slot slot)
 		{
-			container.SetActive(true);
+			if (slot != null)
+			{
+				if (slot.isEmpty())
+				{
+					Hide();
+				} else
+				{
+					Show();
+				}
+			} else
+			{
+				Hide();
+			}
+		}
+
+
+		void OnUpdateInventoryUI(Item item)
+		{
+			if (item == null)
+			{
+				Hide();
+			}
 		}
 
 		void Hide()
 		{
-			container.SetActive(false);
+			canvasGroup.alpha = 0;
+			canvasGroup.blocksRaycasts = false;
+		}
+
+		void Show()
+		{
+			canvasGroup.alpha = 1;
+			canvasGroup.blocksRaycasts = true;
 		}
 	}
 

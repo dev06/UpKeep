@@ -1,8 +1,8 @@
 ID:0
-Name:Snackbar
 Type:Consumable
+Name:Snackbar
 Quantity:0
-Description:Eat this badboy!
+Description: This stuff is good for you!
 
 Location:prefab/objects/consumables/snackbar
 
@@ -10,4 +10,3 @@ HealthGain:0
 HungerGain:10
 StaminaGain:0
 ThirstGain:0
- 

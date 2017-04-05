@@ -1,0 +1,10 @@
+ID:2
+Type:Weapon
+Name:Pistol
+Quantity:0
+Description:Smooth like a butter!
+
+Location:prefab/objects/weapons/pistol
+
+Damage:50
+Range:50

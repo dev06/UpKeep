@@ -17,6 +17,27 @@ namespace Game
 		public Transform itemContainer;
 		public GameObject descriptionContainer;
 
+
+		void OnEnable()
+		{
+			EventManager.OnObjectPickup += OnObjectPickup;
+		}
+
+		void OnDisable()
+		{
+			EventManager.OnObjectPickup -= OnObjectPickup;
+		}
+
+		void OnObjectPickup(Game.Object obj)
+		{
+			AddItem((Item)obj);
+		}
+
+		void OnDropObject(Game.Object obj)
+		{
+			RemoveItem((Item)obj);
+		}
+
 		void Awake()
 		{
 			if (Instance == null)
@@ -39,6 +60,7 @@ namespace Game
 
 		private void GenerateInventoryUI()
 		{
+			if (itemContainer == null) return;
 			float xSpacing = 1.0f;
 			float ySpacing = 1.0f;
 
@@ -59,75 +81,61 @@ namespace Game
 					slot.GetComponent<RectTransform>().sizeDelta = new Vector3(slotSize, slotSize, 1);
 					slot.GetComponent<RectTransform>().localScale = new Vector3(.95f, .95f, 1);
 					slot.transform.localPosition = new Vector3(x * slotSize * xSpacing - xOffset / 2, y * slotSize * ySpacing - yOffset / 2, 1);
-					slot.GetComponent<Slot>().descriptionContainer = descriptionContainer;
 					inventorySlots.Add(slot.GetComponent<Slot>());
 				}
 			}
-
-
 		}
-
-
 
 		public void AddItem(Item item)
 		{
-			ItemObject itemObject = ToItemObject(item);
 			for (int i = 0; i < inventorySlots.Count; i++)
 			{
 				Slot slot = inventorySlots[i];
-				if (slot.isEmpty()) // is slot empty?
+
+				if (slot.isEmpty())
 				{
-					slot.SetItem(itemObject); // yes, so add new item
+					slot.SetSlotObject(item);
+					slot.SetSlotObjectQuantity(1);
+
 					break;
 				} else
 				{
-					int slotItemID = slot.GetSlotItem().id;
-					if (item.id == slotItemID)
+					if (slot.item.objectID == item.objectID)
 					{
-
-						slot.UpdateSlotItemQuantity(1);
+						slot.SetSlotObjectQuantity(1);
 						break;
 					}
 				}
 			}
 		}
 
-		public void RemoveItem(ItemObject item, int quantity = 1)
+		public bool Contains(Item item)
+		{
+			for (int i = 0; i < inventorySlots.Count; i++)
+			{
+				if (inventorySlots[i].isEmpty()) continue;
+				if (inventorySlots[i].item.objectID == item.objectID)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public void RemoveItem(Item item)
 		{
 			for (int i = 0; i < inventorySlots.Count; i++)
 			{
 				Slot slot = inventorySlots[i];
 				if (!slot.isEmpty())
 				{
-					if (slot.GetSlotItem().id == item.id)
+					if (slot.item.objectID == item.objectID)
 					{
-						if (slot.GetSlotItem().quantity > 0)
-						{
-							slot.UpdateSlotItemQuantity(-quantity);
-						} else
-						{
-							slot.SetItem(null);
-						}
+						slot.SetSlotObjectQuantity(-1);
+						break;
 					}
 				}
 			}
-		}
-
-
-
-
-		public ItemObject ToItemObject(Item item)
-		{
-
-			for (int i = 0; i < MasterVar.ItemObjectList.Length; i++)
-			{
-				if (item.id == MasterVar.ItemObjectList[i].id)
-				{
-					return MasterVar.ItemObjectList[i];
-				}
-			}
-
-			return null;
 		}
 	}
 }

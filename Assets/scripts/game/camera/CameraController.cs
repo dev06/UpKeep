@@ -9,7 +9,7 @@ namespace Game
 
 		public Camera camera;
 		public LayerMask detectionMask;
-		private FocusedItem focusedItem;
+		private FocusedObject focusedObject;
 
 		private float timer;
 		public float xSpeed = 10f;
@@ -22,7 +22,7 @@ namespace Game
 		{
 			camera = transform.GetComponent<Camera>();
 			defaultPosition = transform.localPosition;
-			focusedItem = FindObjectOfType<FocusedItem>();
+			focusedObject = FindObjectOfType<FocusedObject>();
 		}
 
 		void Update()
@@ -61,38 +61,43 @@ namespace Game
 
 		void FixedUpdate ()
 		{
+			DetectFocusedObject();
+		}
+
+
+
+		private void DetectFocusedObject()
+		{
+
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hitinfo;
 			if (Physics.Raycast(ray.origin, transform.forward , out hitinfo, 4, detectionMask))
 			{
 				GameObject hitObject = hitinfo.transform.gameObject;
+				ObjectIdentifier component = hitObject.GetComponent<ObjectIdentifier>();
 
-				if (hitObject.GetComponent<Entity>() != null)
+				if (focusedObject != null)
 				{
-					try
+					if (component != null)
 					{
-						Item item = (Item)hitObject.GetComponent<Entity>();
-						if (focusedItem != null)
-						{
-							focusedItem.Notify(item);
-						}
-					} catch (System.Exception e)
-					{
+						focusedObject.Notify(component);
 
+					} else
+					{
+						focusedObject.Hide();
 					}
-				} else if (focusedItem != null)
-				{
-					focusedItem.Hide();
-				}
 
+
+				}
 
 			} else
 			{
-				if (focusedItem != null)
+				if (focusedObject != null)
 				{
-					focusedItem.Hide();
+					focusedObject.Hide();
 				}
 			}
+
 		}
 	}
 

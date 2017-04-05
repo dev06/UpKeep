@@ -4,16 +4,15 @@ using UnityEngine.UI;
 using Game;
 namespace UI
 {
+	[RequireComponent (typeof(CanvasGroup))]
 	public class DescriptionContainer : MonoBehaviour {
-
 
 		public Text itemName;
 		public Text itemDesc;
 		public Image itemIcon;
 		public Text itemQuantity;
-		private ItemObject itemObject;
 
-
+		private CanvasGroup canvasGroup;
 
 		void Start ()
 		{
@@ -21,52 +20,30 @@ namespace UI
 			itemName = transform.GetChild(1).GetComponent<Text>();
 			itemDesc = transform.GetChild(3).GetComponent<Text>();
 			itemQuantity = transform.GetChild(2).GetComponent<Text>();
-
+			canvasGroup = GetComponent<CanvasGroup>();
+			Hide();
 		}
 
-		void Update ()
+		public void UpdateContents(Item item)
 		{
-			if (itemObject != null)
-			{
-				itemName.text = itemObject.name + "";
-				itemDesc.text = itemObject.description + "";
-				itemQuantity.text = itemObject.quantity + "";
-				itemIcon.sprite = itemObject.sprite;
-
-
-			} else
-			{
-
-				itemName.text = "";
-				itemDesc.text = "";
-				itemQuantity.text = "";
-				Hide();
-			}
-
-		}
-
-		public void SetItemObject(ItemObject itmObject)
-		{
-			this.itemObject = itmObject;
-
+			if (item == null) return;
+			itemIcon.sprite = item.objectSprite;
+			itemDesc.text = item.objectDescription;
+			itemName.text = item.objectName;
+			itemQuantity.text = item.objectQuantity + "";
 		}
 
 
 		public void Hide()
 		{
-			gameObject.SetActive(false);
+			canvasGroup.alpha = 0;
+			canvasGroup.blocksRaycasts = false;
 		}
 
 		public void Show()
 		{
-			gameObject.SetActive(true);
-		}
-
-
-		void OnDisable()
-		{
-			SetItemObject(null);
-			Hide();
+			canvasGroup.alpha = 1;
+			canvasGroup.blocksRaycasts = true;
 		}
 	}
 

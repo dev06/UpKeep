@@ -1,0 +1,12 @@
+ID:3
+Type:Consumable
+Name:Health Pack
+Quantity:0
+Description: Helps you heal
+
+Location:prefab/objects/consumables/healthpack
+
+HealthGain:50
+HungerGain:0
+StaminaGain:0
+ThirstGain:0

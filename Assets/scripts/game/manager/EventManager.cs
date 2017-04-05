@@ -11,16 +11,20 @@ namespace Game
 		public static StateChange SetState;
 
 
-		public delegate void ItemPickup(Item item);
-		public static ItemPickup OnItemPickup;
 
+		public delegate void ObjectPickup(Game.Object obj);
+		public static ObjectPickup OnObjectPickup;
 
 
 		public delegate void SlotSelect(Slot slot);
 		public static SlotSelect OnSlotSelect;
 
 
-		public delegate void ManageItem(ItemObject itemObject);
+		public delegate void InventoryUI(Item item);
+		public static InventoryUI OnUpdateInventoryUI;
+
+
+		public delegate void ManageItem(Item item);
 		public static ManageItem OnUseItem;
 		public static ManageItem OnDropItem;
 

@@ -9,35 +9,58 @@ namespace UI
 	public class Slot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
 
-
+		public static Slot selectedSlot;
 		public bool hovering;
-		private ItemObject item;
-		private Image itemSprite;
-		public GameObject descriptionContainer;
+		public Item item;
 
-		private DescriptionContainer container;
+		private Image objectImage;
+		private static DescriptionContainer container;
+
+
+
 		void Start()
 		{
 			container = FindObjectOfType<DescriptionContainer>();
-			itemSprite = transform.GetChild(0).GetComponent<Image>();
+		}
 
+		void OnDisable()
+		{
+
+			if (selectedSlot != null)
+			{
+				selectedSlot = null;
+			}
+
+			if (container != null)
+			{
+				container.Hide();
+			}
 		}
 
 
 		public virtual void OnPointerClick(PointerEventData data)
 		{
-			if (container != null)
+			selectedSlot = this;
+
+			if (selectedSlot.isEmpty())
 			{
-				if (!isEmpty())
-				{
-					InventoryManager.Instance.selectedSlot = this;
-					if (EventManager.OnSlotSelect != null)
-					{
-						EventManager.OnSlotSelect(InventoryManager.Instance.selectedSlot);
-						container.SetItemObject(item);
-					}
-				}
+				container.Hide();
+				selectedSlot = null;
+			} else
+			{
+				container.Show();
+				container.UpdateContents(selectedSlot.item);
 			}
+			if (container != null && selectedSlot != null)
+			{
+				container.UpdateContents(selectedSlot.item);
+			}
+			if (EventManager.OnSlotSelect != null)
+			{
+				EventManager.OnSlotSelect(selectedSlot);
+			}
+
+
 		}
 
 
@@ -45,79 +68,83 @@ namespace UI
 		{
 			hovering = true;
 
-			if (container != null)
+			if (isEmpty() == false && container != null && selectedSlot == null)
 			{
-
-				if (InventoryManager.Instance.selectedSlot == null)
-				{
-					if (!isEmpty())
-					{
-						container.Show();
-						container.SetItemObject(item);
-					}
-
-				}
-
+				container.UpdateContents(item);
+				container.Show();
 			}
-
 		}
 
 		public virtual void OnPointerExit(PointerEventData data)
 		{
 			hovering = false;
-			if (InventoryManager.Instance.selectedSlot == null)
-			{
-				container.Hide();
-				container.SetItemObject(null);
 
+			if (selectedSlot == null)
+			{
+				if (container != null)
+				{
+					container.Hide();
+				}
 			}
 		}
 
 
-		public void UpdateSlotItemQuantity(int quantity)
-		{
-			item.quantity += quantity;
-			if (item.quantity <= 0)
-			{
-				container.Hide();
-				container.SetItemObject(null);
-				InventoryManager.Instance.selectedSlot = null;
-				SetItem(null);
-			}
-		}
-
-
-		public bool isEmpty()
-		{
-			return item == null;
-		}
-
-		public void SetItem(ItemObject item)
+		public void SetSlotObject(Item item)
 		{
 			this.item = item;
+			UpdateSlotContents();
+		}
 
-			if (itemSprite == null)
+
+		public void SetSlotObjectQuantity(int quantity)
+		{
+			if (item == null) return;
+			item.objectQuantity += quantity;
+
+			if (container != null)
 			{
-				itemSprite = transform.GetChild(0).GetComponent<Image>();
+				container.UpdateContents(item);
 			}
+
+
+			if (item.objectQuantity < 1)
+			{
+				SetSlotObject(null);
+				UpdateSlotContents();
+			}
+		}
+
+
+		public void UpdateSlotContents()
+		{
 			if (item != null)
 			{
-				itemSprite.enabled = true;
-				itemSprite.sprite = item.sprite;
-				UpdateSlotItemQuantity(1);
+				if (objectImage == null) objectImage = transform.GetChild(0).GetComponent<Image>();
+				objectImage.sprite = item.objectSprite;
 
 			}
 			else
 			{
-				itemSprite.enabled = false;
+				objectImage.sprite = null;
+				if (container != null)
+				{
+					container.Hide();
+				}
 			}
+
+
+			if (EventManager.OnUpdateInventoryUI != null)
+			{
+				EventManager.OnUpdateInventoryUI(item);
+			}
+
+			objectImage.enabled = !isEmpty();
+
 		}
 
-		public ItemObject GetSlotItem()
-		{
-			return item;
+		public bool isEmpty() {
+			return item == null;
 		}
-
 	}
 
 }

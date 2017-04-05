@@ -1,0 +1,12 @@
+ID:1
+Type:Consumable
+Name:Soda
+Quantity:0
+Description: Replenish your thirst boy!
+
+Location:prefab/objects/consumables/soda
+
+HealthGain:0
+HungerGain:0
+StaminaGain:15
+ThirstGain:0

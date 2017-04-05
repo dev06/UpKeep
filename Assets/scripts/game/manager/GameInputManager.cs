@@ -7,7 +7,13 @@ namespace UpkeepInput
 
 		public static GameInputManager Instance;
 
+		public static KeyCode SPRINT_KEYCODE = KeyCode.LeftShift;
+		public static KeyCode AIM_KEYCODE = KeyCode.Mouse1;
+
+
 		public GameInput input;
+
+
 
 		void Awake()
 		{

@@ -9,22 +9,28 @@ namespace Game
 	{
 		None,
 		Consumable,
+		Weapon,
 	}
 
 
-	public class Object: MonoBehaviour
+	public class Object
 	{
 
 		public int objectID;
 		public string objectName;
 		public string packagePath;
 		public ObjectType objectType;
-
+		public GameObject objectPrefab;
 	}
 
-	public class Consumable : Object
+
+	public class Item : Object
 	{
-
+		public Sprite objectSprite;
+		public string objectDescription;
+		public int objectQuantity;
 	}
+
+
 
 }

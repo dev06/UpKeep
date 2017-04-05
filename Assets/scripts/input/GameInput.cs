@@ -11,7 +11,7 @@ namespace UpkeepInput
 		private system.Cursor cursor;
 		public Vector2 look = Vector2.zero;
 		public Vector2 move = Vector2.zero;
-		private FocusedItem focusedItem;
+		private FocusedObject focusedObject;
 
 		public GameInput()
 		{
@@ -74,20 +74,19 @@ namespace UpkeepInput
 
 			if (UnityEngine.Input.GetKeyDown(KeyCode.F))
 			{
-				if (focusedItem == null)
+				if (focusedObject == null)
 				{
-					focusedItem = FindObjectOfType<FocusedItem>();
+					focusedObject = FindObjectOfType<FocusedObject>();
 				}
 
-				if (focusedItem.item != null)
+				if (focusedObject.objectIdentifier != null)
 				{
-					if (EventManager.OnItemPickup != null)
+					if (EventManager.OnObjectPickup != null)
 					{
-						EventManager.OnItemPickup(focusedItem.item);
+						EventManager.OnObjectPickup(focusedObject.objectIdentifier.GetObject());
 					}
 
-					InventoryManager.Instance.AddItem(focusedItem.item);
-					Destroy(focusedItem.item.gameObject);
+					Destroy(focusedObject.objectIdentifier.transform.gameObject);
 				}
 			}
 		}
