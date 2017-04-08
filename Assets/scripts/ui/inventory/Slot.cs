@@ -9,11 +9,15 @@ namespace UI
 	public class Slot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
 
+		public Color slotRestColor;
+		public Color slotHoverColor;
+
 		public static Slot selectedSlot;
 		public bool hovering;
 		public Item item;
 
 		private Image objectImage;
+		private Image backgroundImage;
 		private static DescriptionContainer container;
 
 
@@ -21,6 +25,12 @@ namespace UI
 		void Start()
 		{
 			container = FindObjectOfType<DescriptionContainer>();
+			if (backgroundImage == null)
+			{
+				backgroundImage =  transform.GetChild(0).GetComponent<Image>();
+			}
+
+			backgroundImage.color = slotRestColor;
 		}
 
 		void OnDisable()
@@ -35,6 +45,12 @@ namespace UI
 			{
 				container.Hide();
 			}
+			if (backgroundImage == null)
+			{
+				backgroundImage =  transform.GetChild(0).GetComponent<Image>();
+			}
+
+			backgroundImage.color = slotRestColor;
 		}
 
 
@@ -73,6 +89,13 @@ namespace UI
 				container.UpdateContents(item);
 				container.Show();
 			}
+
+			if (backgroundImage == null)
+			{
+				backgroundImage =  transform.GetChild(0).GetComponent<Image>();
+			}
+
+			backgroundImage.color = slotHoverColor;
 		}
 
 		public virtual void OnPointerExit(PointerEventData data)
@@ -86,6 +109,13 @@ namespace UI
 					container.Hide();
 				}
 			}
+
+			if (backgroundImage == null)
+			{
+				backgroundImage =  transform.GetChild(0).GetComponent<Image>();
+			}
+
+			backgroundImage.color = slotRestColor;
 		}
 
 
@@ -98,7 +128,7 @@ namespace UI
 
 		public void SetSlotObjectQuantity(int quantity)
 		{
-			if (item == null) return;
+			if (item == null) { return; }
 			item.objectQuantity += quantity;
 
 			if (container != null)
@@ -119,7 +149,7 @@ namespace UI
 		{
 			if (item != null)
 			{
-				if (objectImage == null) objectImage = transform.GetChild(0).GetComponent<Image>();
+				if (objectImage == null) { objectImage = transform.GetChild(1).GetComponent<Image>(); }
 				objectImage.sprite = item.objectSprite;
 
 			}

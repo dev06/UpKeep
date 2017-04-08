@@ -11,6 +11,11 @@ namespace World
 		public int octaves = 5;
 		public float frequency = 50f;
 		public float amplitude = .5f;
+		public float scale = 1f;
+		public float persistence;
+		public float lacunarity;
+		public int seed;
+		public Vector2 offset;
 		public Texture2D[] textures;
 		void Start()
 		{
@@ -20,7 +25,7 @@ namespace World
 		void CreateTerrain()
 		{
 			TerrainData data = new TerrainData();
-			data.size = new Vector3(100, 100, 100);
+			data.size = new Vector3(500	, 100, 500);
 			data.heightmapResolution = 129;
 			data.SetDetailResolution(512, 512);
 
@@ -46,46 +51,105 @@ namespace World
 
 
 			TerrainData data = Terrain.activeTerrain.terrainData;
-
-
-			data.SetHeights(0 , 0, GetHeightMap(data));
-			//	float[, ,] splatData = new float[data.alphamapWidth, data.alphamapHeight, data.alphamapLayers];
-			//	splatData[0, 0, 0] = .5f;
-			//	data.SetAlphamaps(0, 0, splatData);
-
-
+			data.SetHeights(0 , 0, GetHeightMap(data, seed, scale, octaves, persistence , lacunarity, offset));
 		}
 
 
-		private float[,] GetHeightMap(TerrainData data)
+		// private float[,] GetHeightMap(TerrainData data)
+		// {
+		// 	float[,] heightMap = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapWidth);
+		// 	for (int z = 0; z < data.heightmapHeight; z++)
+		// 	{
+		// 		for (int x = 0; x < data.heightmapWidth; x++)
+		// 		{
+		// 			float noise = 0.0f;
+		// 			float gain = 1.0f;
+
+		// 			for (int i = 0; i < octaves; i++)
+		// 			{
+
+		// 				noise += Mathf.PerlinNoise(x * gain / frequency, z * gain / frequency) * amplitude / gain;
+		// 				gain = 2f * gain;
+
+
+		// 			}
+		// 			heightMap[z, x] = noise;
+		// 		}
+		// 	}
+		// 	return heightMap;
+		// }
+
+
+
+		private float[,] GetHeightMap(TerrainData data, int seed,  float scale, int octaves, float persistence, float lacunarity, Vector2 offset)
 		{
-			float[,] heightMap = data.GetHeights(0, 0, data.heightmapWidth, data.heightmapWidth);
-			for (int z = 0; z < data.heightmapHeight; z++)
+			int mapHeight = data.heightmapWidth;
+			int mapWidth = data.heightmapWidth;
+
+			System.Random prng = new System.Random(seed);
+			Vector2[] octaveOffsets = new Vector2[octaves];
+
+			for (int i = 0; i < octaves; i++)
 			{
-				for (int x = 0; x < data.heightmapWidth; x++)
+				float offsetX = prng.Next(-100000, 100000) + offset.x;
+				float offsetY = prng.Next(-100000, 100000) + offset.y;
+				octaveOffsets[i] = new Vector2(offsetX, offsetY);
+			}
+
+			if (scale <= 0) { scale = .0001f; }
+			float[,] heightMap = data.GetHeights(0, 0, mapWidth, mapWidth);
+
+
+			float maxNoiseHeight = float.MinValue;
+			float minNoiseHeight = float.MaxValue;
+
+			for (int y = 0; y < mapHeight; y++)
+			{
+				for (int x = 0; x < mapWidth; x++)
 				{
-					float noise = 0.0f;
-					float gain = 1.0f;
+					amplitude = 1f;
+					float frequency = 1f;
+					float noiseHeight = 0;
+
 					for (int i = 0; i < octaves; i++)
 					{
-						noise += Mathf.PerlinNoise(x * gain / frequency, z * gain / frequency) * amplitude / gain;
-						gain = 2f * gain;
+						float sampleX = (x - mapWidth / 2) / scale * frequency + octaveOffsets[i].x;
+						float sampleY = (y - mapHeight / 2) / scale * frequency + octaveOffsets[i].y;
+
+						float perlinValue = Mathf.PerlinNoise(sampleX, sampleY) * 2 - 1;
+						noiseHeight += perlinValue * amplitude;
+
+						amplitude *= persistence;
+						frequency *= lacunarity;
+
+					}
+
+					if (noiseHeight > maxNoiseHeight)
+					{
+						maxNoiseHeight = noiseHeight;
+					} else if (noiseHeight < minNoiseHeight)
+					{
+						minNoiseHeight = noiseHeight;
 					}
 
 
-					heightMap[z, x] = noise;
+					heightMap[x, y] = noiseHeight;
 
 
 				}
-
 			}
+
+			for (int y = 0; y < mapHeight; y++)
+			{
+				for (int x = 0; x < mapWidth; x++)
+				{
+					heightMap[x, y] = Mathf.InverseLerp(minNoiseHeight, maxNoiseHeight, heightMap[x, y]);
+				}
+			}
+
 
 			return heightMap;
 		}
-
-
-
-
 	}
 
 }

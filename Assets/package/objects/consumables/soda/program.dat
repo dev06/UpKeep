@@ -8,5 +8,5 @@ Location:prefab/objects/consumables/soda
 
 HealthGain:0
 HungerGain:0
-StaminaGain:15
-ThirstGain:0
+StaminaGain:5
+ThirstGain:5

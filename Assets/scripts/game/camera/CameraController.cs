@@ -5,8 +5,10 @@ using UI;
 namespace Game
 {
 	[RequireComponent (typeof(Camera))]
-	public class CameraController : MonoBehaviour {
+	public class CameraController : MonoBehaviour
+	{
 
+		private Player player;
 		public Camera camera;
 		public LayerMask detectionMask;
 		private FocusedObject focusedObject;
@@ -18,18 +20,56 @@ namespace Game
 
 		private Vector3 defaultPosition;
 		private Vector3 bobPosition;
-		void Start ()
+
+
+		private float recoilValue;
+		private float recoil;
+		private float speed ;
+		private float fowardMultiplier;
+		private float headRotateMultiplier;
+		private float acceleration;
+
+
+		public void Initialize()
 		{
 			camera = transform.GetComponent<Camera>();
 			defaultPosition = transform.localPosition;
 			focusedObject = FindObjectOfType<FocusedObject>();
+
 		}
 
 		void Update()
 		{
-			transform.localPosition = Vector3.Lerp(transform.localPosition, bobPosition, Time.deltaTime * 3.4f);
+			if (player == null) { return; }
 
+			Weapon w = player.weaponController.GetWeapon();
+			if (w != null)
+			{
+
+			}
+
+			UpdateCameraTransform();
+
+			UpdateCameraRecoil();
 		}
+
+		public void SetPlayer(Player player)
+		{
+			this.player = player;
+		}
+
+		private void UpdateCameraTransform()
+		{
+			transform.localPosition = Vector3.Lerp(transform.localPosition, bobPosition + Vector3.forward * recoilValue * fowardMultiplier, Time.deltaTime * 3.4f);
+			transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(new Vector3(-recoilValue * headRotateMultiplier , 0, 0)), Time.deltaTime * speed);
+		}
+
+		private void UpdateCameraRecoil()
+		{
+			recoilValue = recoilValue > 0 ? recoilValue - (Time.deltaTime * speed) : 0;
+		}
+
+
 
 
 		public void Bob(float multiplier)
@@ -47,6 +87,36 @@ namespace Game
 			bobPosition = defaultPosition + new Vector3(xCam * multiplier, yCam * multiplier, 0);
 		}
 
+		public void TriggerRecoil()
+		{
+
+			recoilValue = recoil;
+		}
+
+
+		public void SetRecoilWeaponValue(Weapon w)
+		{
+			float reset = 0;
+			if (w != null)
+			{
+				recoil = w.recoil;
+				speed = w.recoilSpeed;
+				fowardMultiplier = w.forwardRecoilMult;
+				headRotateMultiplier = w.upwardRecoilMult;
+
+			} else
+			{
+				recoil = reset;
+				speed = reset;
+				fowardMultiplier = reset;
+				headRotateMultiplier = reset;
+
+			}
+
+		}
+
+
+
 		public void ResetBob()
 		{
 			timer = 0;
@@ -56,14 +126,10 @@ namespace Game
 		}
 
 
-
-
-
 		void FixedUpdate ()
 		{
 			DetectFocusedObject();
 		}
-
 
 
 		private void DetectFocusedObject()
@@ -86,8 +152,6 @@ namespace Game
 					{
 						focusedObject.Hide();
 					}
-
-
 				}
 
 			} else
@@ -97,8 +161,6 @@ namespace Game
 					focusedObject.Hide();
 				}
 			}
-
 		}
 	}
-
 }

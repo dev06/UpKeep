@@ -11,8 +11,8 @@ namespace Game
 		public static InventoryManager Instance;
 		public List<Slot> inventorySlots = new List<Slot>();
 		public Slot selectedSlot;
-		public int row = 5;
-		public int column = 5;
+		private int row = 6;
+		private int column = 7;
 		private GameObject SlotPrefab;
 		public Transform itemContainer;
 		public GameObject descriptionContainer;
@@ -60,9 +60,9 @@ namespace Game
 
 		private void GenerateInventoryUI()
 		{
-			if (itemContainer == null) return;
-			float xSpacing = 1.0f;
-			float ySpacing = 1.0f;
+			if (itemContainer == null) { return; }
+			float xSpacing = 0.95f;
+			float ySpacing = 0.95f;
 
 			float slotSize = 100f - (100f * (1f - xSpacing));
 
@@ -113,7 +113,7 @@ namespace Game
 		{
 			for (int i = 0; i < inventorySlots.Count; i++)
 			{
-				if (inventorySlots[i].isEmpty()) continue;
+				if (inventorySlots[i].isEmpty()) { continue; }
 				if (inventorySlots[i].item.objectID == item.objectID)
 				{
 					return true;

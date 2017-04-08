@@ -16,8 +16,16 @@ namespace Game
 		private bool targetInMemory;
 		private bool targetOutside;
 		private float memoryTimer;
+		private float noiseDistance = 1;
+		private float attackDistance = .8f;
+		private float defaultDistance;
 		private int walkHash = Animator.StringToHash("isWalking");
 
+
+		void OnEnable()
+		{
+			EventManager.OnFireWeapon += OnFireWeapon;
+		}
 
 		void Start()
 		{
@@ -32,11 +40,12 @@ namespace Game
 			target = FindObjectOfType<Player>().transform.FindChild("Target").transform;
 			mobChar.SetHealth(100);
 			StartCoroutine(Track());
+			defaultDistance = 10f;
 		}
 
 		void FixedUpdate()
 		{
-			if (gameController.isGamePaused) return;
+			if (gameController.isGamePaused) { return; }
 
 			if (targetOutside && targetInMemory)
 			{
@@ -49,18 +58,22 @@ namespace Game
 				}
 			}
 
+			if (noiseDistance > 1)
+			{
+				noiseDistance -= Time.deltaTime * (noiseDistance / 2 );
+			}
 		}
 
 		IEnumerator Track()
 		{
-			float delay = .25f;
+			float delay = .01f;
 
 			while (agent != null && target != null)
 			{
 				float distanceFromTarget = Vector3.Distance(target.position, transform.position);
 
 
-				if (distanceFromTarget < 10)
+				if (distanceFromTarget < defaultDistance + noiseDistance)
 				{
 					targetInMemory = true;
 					targetOutside = false;
@@ -98,6 +111,8 @@ namespace Game
 
 		private void ResumeAgent()
 		{
+
+			if (agent == null) { return; }
 			if (agent != null)
 			{
 				agent.Resume();
@@ -108,6 +123,7 @@ namespace Game
 
 		private void PauseAgent()
 		{
+			if (agent == null) { return; }
 			if (agent != null)
 			{
 				agent.Stop();
@@ -120,16 +136,29 @@ namespace Game
 		{
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hitInfo;
-			if (Physics.Raycast(ray.origin, transform.forward * 1,  out hitInfo))
+			if (Physics.Raycast(ray.origin, transform.forward,  out hitInfo , attackDistance))
 			{
 				GameObject hitObject = hitInfo.transform.gameObject;
 				if (hitObject.GetComponent<Mob>() != null)
 				{
 					Mob mob = (Mob)hitObject.GetComponent<Mob>();
-					if (mob == this) return;
-					mob.DoDamage(10);
+					if (mob == this) { return; }
+					mob.DoDamage(10 * Time.deltaTime);
 				}
 			}
+		}
+
+
+		private void OnFireWeapon(Weapon weapon)
+		{
+			noiseDistance +=  weapon.noise;
+		}
+
+		void OnDisable()
+		{
+			StopAllCoroutines();
+			EventManager.OnFireWeapon -= OnFireWeapon;
+
 		}
 	}
 }

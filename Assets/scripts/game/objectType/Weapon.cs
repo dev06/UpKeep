@@ -9,6 +9,13 @@ namespace Game
 
 		public float damage;
 		public float range;
+		public float recoil;
+		public float recoilSpeed;
+		public float forwardRecoilMult;
+		public float upwardRecoilMult;
+		public float noise;
+
+		public EWeaponObject eWeaponObject;
 
 		public Weapon()
 		{
@@ -19,6 +26,12 @@ namespace Game
 		{
 			this.damage = float.Parse(damage);
 			this.range = float.Parse(range);
+		}
+
+
+		public EWeaponObject GetEWeaponObject()
+		{
+			return eWeaponObject;
 		}
 
 	}

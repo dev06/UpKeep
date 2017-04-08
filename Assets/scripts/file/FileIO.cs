@@ -62,7 +62,7 @@ namespace SystemTools
 			List <KeyValuePair<string, string>> pair = new List<KeyValuePair<string, string>>();
 			for (int i = 0; i < lines.Length; i++)
 			{
-				if (lines[i] == "") continue;
+				if (lines[i] == "") { continue; }
 				string[] data = lines[i].Split(':');
 				pair.Add(new KeyValuePair<string, string>(data[0], data[1]));
 			}

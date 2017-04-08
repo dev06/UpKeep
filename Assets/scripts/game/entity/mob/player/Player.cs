@@ -5,6 +5,8 @@ using system;
 using UpkeepInput;
 namespace Game
 {
+
+	[RequireComponent (typeof(PlayerWeaponController))]
 	[RequireComponent (typeof(PlayerActionController))]
 	[RequireComponent (typeof(PlayerVitalController))]
 	[RequireComponent (typeof(PlayerLookController))]
@@ -21,7 +23,8 @@ namespace Game
 		public PlayerMovementController movementController;
 		public PlayerVitalController vitalController;
 		public PlayerActionController actionController;
-
+		public PlayerWeaponController weaponController;
+		public Transform lookPoint;
 		private CameraBob cameraBob;
 		private PlayerLookController lookController;
 		private StateManager stateManager;
@@ -52,6 +55,7 @@ namespace Game
 		{
 			characterController = GetComponent<CharacterController>();
 			cameraController = FindObjectOfType<CameraController>();
+			lookPoint = cameraController.transform;
 
 			cameraBob = Camera.main.GetComponent<CameraBob>();
 			animator = GetComponent<Animator>();
@@ -65,17 +69,24 @@ namespace Game
 			lookController = GetComponent<PlayerLookController>();
 			movementController = GetComponent<PlayerMovementController>();
 			actionController = GetComponent<PlayerActionController>();
+			weaponController = GetComponent<PlayerWeaponController>();
+
 			vitalController.Initialize();
 			lookController.Initialize();
 			movementController.Initialize();
 			actionController.Initialize();
+			weaponController.Initialize();
+			cameraController.Initialize();
+			cameraController.SetPlayer(this);
+			bulletHole = (GameObject)Resources.Load("BulletHole");
 		}
 
 
 
+		public GameObject bulletHole;
 		private void Update()
 		{
-			if (gameController.isGamePaused) return;
+			if (gameController.isGamePaused) { return; }
 
 			UpdateMovement();
 
@@ -85,10 +96,19 @@ namespace Game
 
 			UpdatePlayerAction();
 
-			if (Input.GetMouseButtonDown(0) && stateManager.state != StateManager.State.INVENTORY)
+			if (Input.GetMouseButtonDown(0) && stateManager.state != StateManager.State.INVENTORY && !movementController.IsSprinting())
 			{
-				WeaponController.Attack(Camera.main.transform);
+				//	WeaponController.Attack(Camera.main.transform);
+				weaponController.Attack(Camera.main.transform);
+				cameraController.TriggerRecoil();
+
+
 			}
+
+
+
+
+
 		}
 
 
@@ -145,7 +165,8 @@ namespace Game
 				{
 					if (itemInHand.GetItem() == null)
 					{
-						WeaponController.EquipWeapon((Weapon)item, itemInHand.transform);
+						weaponController.EquipWeapon((Weapon)item, itemInHand.transform);
+						cameraController.SetRecoilWeaponValue((Weapon)item);
 						itemInHand.SetItem(item);
 					}
 					break;
@@ -156,7 +177,12 @@ namespace Game
 		void OnDropItem(Item item)
 		{
 			ObjectSpawnerController.SpawnObjectRelativeTo(item.objectID, transform);
-			itemInHand.SetItem(null);
+			if (item is Weapon)
+			{
+				itemInHand.SetItem(null);
+				cameraController.SetRecoilWeaponValue(null);
+				weaponController.SetEquippedWeapon(null);
+			}
 		}
 
 
@@ -166,6 +192,7 @@ namespace Game
 			SetFloat("Hunger", GetFloat("Hunger") + item.hungerGain);
 			SetFloat("Stamina", GetFloat("Stamina") + item.staminaGain);
 			SetFloat("Health", GetFloat("Health") + item.healthGain);
+			SetFloat("Thirst", GetFloat("Thirst") + item.thirstGain);
 		}
 
 
@@ -179,6 +206,11 @@ namespace Game
 		public Animator GetAnimator()
 		{
 			return animator;
+		}
+
+		public Item GetItemInHand()
+		{
+			return itemInHand.GetItem();
 		}
 
 	}

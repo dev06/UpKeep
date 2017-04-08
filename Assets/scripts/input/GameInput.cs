@@ -86,6 +86,11 @@ namespace UpkeepInput
 						EventManager.OnObjectPickup(focusedObject.objectIdentifier.GetObject());
 					}
 
+					ObjectIdentifier objIdentifier = focusedObject.objectIdentifier;
+					if (objIdentifier.GetParent() != null)
+					{
+						Destroy(objIdentifier.GetParent().gameObject);
+					}
 					Destroy(focusedObject.objectIdentifier.transform.gameObject);
 				}
 			}

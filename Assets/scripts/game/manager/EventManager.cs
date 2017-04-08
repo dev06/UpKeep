@@ -29,6 +29,11 @@ namespace Game
 		public static ManageItem OnDropItem;
 
 
+		public delegate void ManageWeapon(Weapon weapon);
+		public static ManageWeapon OnFireWeapon;
+
+
+
 
 	}
 

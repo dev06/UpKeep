@@ -37,7 +37,7 @@ namespace UI
 					float health = mob.GetFloat("Health");
 					float maxHealth = mob.GetFloat("MaxHealth");
 					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, health / maxHealth, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * maxHealth) + " % ";
+					text.text = Mathf.RoundToInt((foreground.fillAmount * maxHealth)) + " % ";
 					break;
 				}
 
@@ -46,7 +46,7 @@ namespace UI
 					float stamina = mob.GetFloat("Stamina");
 					float maxStamina = mob.GetFloat("MaxStamina");
 					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, stamina / maxStamina, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * maxStamina) + " % ";
+					text.text = Mathf.RoundToInt((foreground.fillAmount * maxStamina)) + " % ";
 					break;
 				}
 
@@ -54,14 +54,14 @@ namespace UI
 				{
 					float hunger = mob.GetFloat("Hunger");
 					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, hunger / 100.0f, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * 100.0f) + " % ";
+					text.text = Mathf.RoundToInt((foreground.fillAmount * 100.0f)) + " % ";
 					break;
 				}
 				case TrackingVital.THIRST:
 				{
-					float thirst = mob.GetFloat("Thrist");
+					float thirst = mob.GetFloat("Thirst");
 					foreground.fillAmount = Mathf.SmoothDamp(foreground.fillAmount, thirst / 100.0f, ref velocity, .1f);
-					text.text = (int)(foreground.fillAmount * 100.0f) + " % ";
+					text.text = Mathf.RoundToInt((foreground.fillAmount * 100.0f)) + " % ";
 					break;
 				}
 			}

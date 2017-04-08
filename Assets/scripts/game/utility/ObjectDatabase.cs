@@ -24,7 +24,7 @@ namespace GameUtility
 			consumableObject.staminaGain = float.Parse(GetValue(pair, "StaminaGain"));
 			consumableObject.objectPrefab = (GameObject)Resources.Load(consumableObject.packagePath + "/prefab");
 			consumableObject.objectSprite = Resources.Load<Sprite>(consumableObject.packagePath + "/sprite");
-			if (consumableObject.objectQuantity > 0) InventoryManager.Instance.AddItem(consumableObject);
+			if (consumableObject.objectQuantity > 0) { InventoryManager.Instance.AddItem(consumableObject); }
 			objectList.Add(consumableObject);
 		}
 
@@ -39,8 +39,14 @@ namespace GameUtility
 			weapon.objectDescription = GetValue(pair, "Description");
 			weapon.damage = float.Parse(GetValue(pair, "Damage"));
 			weapon.range = float.Parse(GetValue(pair, "Range"));
+			weapon.recoil = float.Parse(GetValue(pair, "Recoil"));
+			weapon.recoilSpeed = float.Parse(GetValue(pair, "RecoilSpeed"));
+			weapon.forwardRecoilMult = float.Parse(GetValue(pair, "ForwardRecoilMult"));
+			weapon.upwardRecoilMult = float.Parse(GetValue(pair, "UpwardRecoilMult"));
+			weapon.noise = float.Parse(GetValue(pair, "Noise"));
+
 			weapon.objectPrefab = (GameObject)Resources.Load(weapon.packagePath + "/prefab");
-			weapon.objectSprite = Resources.Load<Sprite>(weapon.packagePath + "/sprite");
+			weapon.objectSprite = Resources.Load<Sprite>(weapon.packagePath + "/sprites" +  "/sprite");
 			objectList.Add(weapon);
 
 		}
@@ -48,7 +54,7 @@ namespace GameUtility
 
 		public static Game.Object GetObject(int id)
 		{
-			if (id > objectList.Count || id < 0) return objectList[0];
+			//			if (id > objectList.Count || id < 0) { return objectList[0]; }
 
 			for (int i = 0; i < objectList.Count; i++)
 			{
@@ -57,7 +63,7 @@ namespace GameUtility
 					return objectList[i];
 				}
 			}
-			return objectList[0];
+			return null;
 		}
 
 

@@ -10,6 +10,9 @@ namespace GameUtility
 		public static Color SkyColor = new Color(92f / constantColor, 175 / constantColor, 255f / constantColor, 1.0f);
 
 
+
+		public static readonly int LAYER_BUILDING = 12;
+
 	}
 
 }

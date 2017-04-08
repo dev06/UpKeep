@@ -6,6 +6,7 @@ namespace Game
 	{
 
 
+		public float startHour = 12f;
 		public float TotalHour = 24.0f;
 		public float daySpeed = 0.1f;
 
@@ -18,12 +19,18 @@ namespace Game
 		public static float TotalDay;
 
 
+		private Color ambientColor;
+		private float ambientIntensity;
+
 		void Start()
 		{
 			sunRotation = Vector3.zero;
 			TotalDay = TotalHour;
-			time = TotalHour / 2f;
+			time = TotalHour / (TotalHour / startHour);
+			ambientColor = new Color(0, 0, 0, 1);
+			//SetAmbientColor(ambientIntensity);
 		}
+
 
 		void Update ()
 		{
@@ -36,18 +43,34 @@ namespace Game
 					time = 0;
 				}
 
-
-				float intensity = Mathf.Abs(Mathf.Sin(time));
-
-
-
-
 				float rotation = ((int)(time * 360f) / TotalHour) - 90;
 				sunRotation.x = rotation;
 				Hour = time;
+				ambientIntensity = Sin(rotation);
+				ambientIntensity = Mathf.Clamp(ambientIntensity, 0, 1);
+				SetAmbientColor(ambientIntensity);
 				transform.rotation = Quaternion.Euler(sunRotation);
 			}
 		}
-	}
 
+
+		private void SetAmbientColor(float intensity)
+		{
+
+
+			ambientColor.r = intensity;
+			ambientColor.g = intensity;
+			ambientColor.b = intensity;
+			RenderSettings.ambientSkyColor = ambientColor;
+			RenderSettings.ambientGroundColor = ambientColor;
+		}
+
+
+
+		float Sin(float mydeg)
+		{
+			return  Mathf.Sin((mydeg * Mathf.PI) / 180);
+		}
+
+	}
 }

@@ -2,7 +2,7 @@ ID:0
 Type:Consumable
 Name:Snackbar
 Quantity:0
-Description: This stuff is good for you!
+Description: Replenish your thirst boy!
 
 Location:prefab/objects/consumables/snackbar
 

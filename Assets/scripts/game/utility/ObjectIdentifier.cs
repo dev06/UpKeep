@@ -10,6 +10,7 @@ namespace Game
 
 		public Game.Object obj;
 		public int objectIdentifier;
+		public Transform parent;
 
 		void Start ()
 		{
@@ -24,6 +25,15 @@ namespace Game
 		public void SetObject(Game.Object obj)
 		{
 			this.obj = obj;
+		}
+
+		public Transform GetParent()
+		{
+			return parent;
+		}
+
+		public void SetParent(Transform parent) {
+			this.parent = parent;
 		}
 	}
 }

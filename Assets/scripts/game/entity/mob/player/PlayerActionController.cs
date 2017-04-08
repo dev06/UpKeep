@@ -24,6 +24,9 @@ namespace Game
 		private Animator animator;
 		private float layerWeight;
 		private float layerWeightVel;
+		private bool isPunching;
+		private float punchingSpeed = 12f;
+		private float punchDamage = 15;
 
 		public PlayerActionState actionState;
 		public PlayerMovementController movementController;
@@ -50,6 +53,8 @@ namespace Game
 			animator.SetBool(aimHash, aiming && hasItem && !player.movementController.IsSprinting());
 			animator.SetBool("sprinting", player.movementController.IsSprinting() && hasItem);
 			animator.SetLayerWeight(1, hasItem ? DampWeight(1) : DampWeight(0));
+
+			TriggerPunch();
 		}
 
 		private bool IsState(PlayerActionState state)
@@ -63,6 +68,71 @@ namespace Game
 			layerWeight = Mathf.SmoothDamp(layerWeight, targetValue, ref layerWeightVel, Time.deltaTime * 5.0f);
 			return layerWeight;
 		}
+
+
+		private void TriggerPunch()
+		{
+			if (Input.GetKeyDown(GameInputManager.PUNCH_KEYCODE) && !player.GetGameController().isGamePaused && !player.GetGameController().IsState(StateManager.State.INVENTORY))
+			{
+				if (!isPunching)
+				{
+					if (player.GetItemInHand() == null)
+					{
+						StartCoroutine("AnimatePunch");
+						RegisterPunch(player.lookPoint);
+					}
+				}
+			}
+		}
+
+
+		IEnumerator AnimatePunch()
+		{
+			float value = .1f;
+			float timer = 0;
+			bool complete = false;
+			isPunching = true;
+
+			while (!complete)
+			{
+				timer += Time.deltaTime * punchingSpeed;
+				value = Mathf.Sin(timer) ;
+				if (value < 0)
+				{
+					complete = true;
+					isPunching = false;
+					break;
+				}
+
+				animator.SetLayerWeight(2, value);
+				yield return new WaitForSeconds(Time.deltaTime);
+			}
+		}
+
+
+		private void RegisterPunch(Transform lookPoint)
+		{
+			Ray ray = new Ray(lookPoint.position, lookPoint.forward);
+			RaycastHit hitInfo;
+			if (Physics.Raycast(ray.origin, lookPoint.forward, out hitInfo, 1))
+			{
+				GameObject hitObject = hitInfo.transform.gameObject;
+
+				if (hitObject == null)
+				{
+					return;
+				}
+
+
+				if ((zombie)hitObject.GetComponent<Mob>() != null)
+				{
+					zombie z = (zombie)hitObject.GetComponent<Mob>();
+					z.DoDamage(punchDamage);
+				}
+			}
+		}
+
+
 
 
 		public void SetActionState(PlayerActionState state)

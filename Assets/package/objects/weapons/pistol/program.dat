@@ -6,5 +6,10 @@ Description:Smooth like a butter!
 
 Location:prefab/objects/weapons/pistol
 
-Damage:50
+Damage:25
 Range:50
+Recoil:8 
+RecoilSpeed:40 
+ForwardRecoilMult:0.00047
+UpwardRecoilMult:.54
+Noise:5

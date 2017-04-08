@@ -18,6 +18,7 @@ namespace Game
 		{
 			if (EquippedWeapon != null)
 			{
+				EquippedWeapon.eWeaponObject.TriggerMuzzle();
 				Ray ray = new Ray(parent.position, parent.forward);
 				RaycastHit hitInfo;
 				if (Physics.Raycast(ray.origin, parent.forward * EquippedWeapon.range, out hitInfo))

@@ -57,7 +57,13 @@ namespace Game
 			mobChar.SetFloat(id, value);
 		}
 
+
+		public GameController GetGameController()
+		{
+			return gameController;
+		}
 	}
+
 }
 
 
