@@ -34,7 +34,6 @@ namespace Game
 			if (Physics.Raycast(ray.origin, parent.forward, out hitInfo,  w.range))
 			{
 				GameObject hitObject = hitInfo.transform.gameObject;
-
 				if (hitObject.GetComponent<Mob>() != null)
 				{
 					Mob mob = (Mob)hitObject.GetComponent<Mob>();

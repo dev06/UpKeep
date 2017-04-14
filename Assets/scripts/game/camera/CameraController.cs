@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UI;
-
+using UnityStandardAssets.ImageEffects;
 namespace Game
 {
 	[RequireComponent (typeof(Camera))]
@@ -29,10 +29,12 @@ namespace Game
 		private float headRotateMultiplier;
 		private float acceleration;
 
+		private BlurOptimized blur;
 
 		public void Initialize()
 		{
 			camera = transform.GetComponent<Camera>();
+			blur = GetComponent<BlurOptimized>();
 			defaultPosition = transform.localPosition;
 			focusedObject = FindObjectOfType<FocusedObject>();
 
@@ -40,16 +42,16 @@ namespace Game
 
 		void Update()
 		{
-			if (player == null) { return; }
+			//camera.enabled = !DebugController.DEBUG_MODE;
 
-			Weapon w = player.weaponController.GetWeapon();
-			if (w != null)
+			if (player == null)
 			{
 
+				return;
 			}
 
 			UpdateCameraTransform();
-
+			blur.enabled = player.stateManager.IsState(StateManager.State.DEBUG);
 			UpdateCameraRecoil();
 		}
 
@@ -141,6 +143,7 @@ namespace Game
 			{
 				GameObject hitObject = hitinfo.transform.gameObject;
 				ObjectIdentifier component = hitObject.GetComponent<ObjectIdentifier>();
+
 
 				if (focusedObject != null)
 				{

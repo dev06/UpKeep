@@ -7,23 +7,22 @@ namespace Game
 	public class CloudGenerator : MonoBehaviour
 	{
 
+		public Transform parent;
+		public int mapSize = 5;
+		public float scale = 100;
+		public float spread = 1000;
+		public float squareSizeOffset = 1;
+		public float rotation = 180;
+
+		public float baseHeight = 100;
+		public float maxHeight = 100;
+
 		private GameObject prefab;
-
-
-		public Vector2 scaleX;
-		public Vector2 scaleZ;
-
-		public Vector2 positionX;
-		public Vector2 positionZ;
-		public Vector2 positionY;
 
 		List<GameObject> clouds = new List<GameObject>();
 
 		void Start()
 		{
-
-
-
 
 			prefab = GameResource.Cloud;
 
@@ -41,30 +40,25 @@ namespace Game
 			clouds.Clear();
 
 
-			for (int i = 0; i < 40; i++)
+			for (int z = 0; z < mapSize; z++)
 			{
+				for (int x = 0; x < mapSize; x++)
+				{
+					float xPos = Random.Range(-spread, spread);
+					float zPos = Random.Range(-spread, spread);
+					float perlinValue = Mathf.PerlinNoise(x, z) * xPos;
+					float perlinValueZ = Mathf.PerlinNoise(x, z) * zPos;
+					float cloudHeight = Random.Range(baseHeight, maxHeight);
+					GameObject clone = Instantiate(prefab, new Vector3(perlinValue, cloudHeight, perlinValueZ) , Quaternion.Euler(new Vector3(rotation, 0, 0))) as GameObject;
+					float s = Random.Range(0 , scale);
 
-				System.Random prng = new System.Random();
-				float x = Random.Range(positionX.x, positionX.y);
-				float y = Random.Range(positionY.x, positionY.y);
-				float z = Random.Range(positionZ.x, positionZ.y);
-				float sx = Random.Range(scaleX.x, scaleX.y);
-				float sz = Random.Range(scaleZ.x, scaleZ.y);
-				GameObject clone = Instantiate(prefab, new Vector3(x, y, z), Quaternion.Euler(new Vector3(0, 0, 0))) as GameObject;
-				clone.transform.localScale = new Vector3(sx, 1, sz);
-				clouds.Add(clone);
+					clone.transform.localScale = new Vector3(s + Random.Range(0 , squareSizeOffset), 1, s + Random.Range(0 , squareSizeOffset));
+					clouds.Add(clone);
+					clone.transform.SetParent(parent);
+				}
 			}
+
 		}
-
-		void Update()
-		{
-			if (Input.GetMouseButtonDown(0))
-			{
-				Generate();
-			}
-		}
-
-
 	}
 
 }

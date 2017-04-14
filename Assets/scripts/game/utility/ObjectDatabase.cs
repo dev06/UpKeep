@@ -52,6 +52,20 @@ namespace GameUtility
 		}
 
 
+		public static void CreateMiscObject(List <KeyValuePair<string , string>> pair)
+		{
+			Misc misc = new Misc();
+			misc.objectID = int.Parse(GetValue(pair, "ID"));
+			misc.objectType = (ObjectType) System.Enum.Parse(typeof(ObjectType), GetValue(pair, "Type"));
+			misc.objectName = GetValue(pair, "Name");
+			misc.packagePath = GetValue(pair, "Location");
+			misc.objectDescription = GetValue(pair, "Description");
+			misc.objectSprite = Resources.Load<Sprite>(misc.packagePath + "/sprites" + "/sprite");
+			misc.objectPrefab = (GameObject)Resources.Load(misc.packagePath + "/prefab");
+			objectList.Add(misc);
+		}
+
+
 		public static Game.Object GetObject(int id)
 		{
 			//			if (id > objectList.Count || id < 0) { return objectList[0]; }

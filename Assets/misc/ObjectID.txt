@@ -1,0 +1,7 @@
+Upkeep object id
+
+0 = snackbar
+1 = sodacan
+2 = pistol 
+3 = healthpack
+4 = flashlight

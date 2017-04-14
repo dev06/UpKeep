@@ -10,6 +10,7 @@ namespace Game
 		None,
 		Consumable,
 		Weapon,
+		Misc,
 	}
 
 

@@ -46,15 +46,20 @@ namespace Game
 
 		public void UpdatePlayerAction()
 		{
-			bool hasItem = player.itemInHand.GetItem() != null;
-			bool aiming = Input.GetKey(GameInputManager.AIM_KEYCODE);
+			if (DebugController.DEBUG_MODE == false)
+			{
+				bool hasItem = player.itemInHand.GetItem() != null;
+				bool aiming = Input.GetKey(GameInputManager.AIM_KEYCODE);
 
-			animator.SetBool(walkHash, player.movementController.IsMoving());
-			animator.SetBool(aimHash, aiming && hasItem && !player.movementController.IsSprinting());
-			animator.SetBool("sprinting", player.movementController.IsSprinting() && hasItem);
-			animator.SetLayerWeight(1, hasItem ? DampWeight(1) : DampWeight(0));
+				animator.SetBool(walkHash, player.movementController.IsMoving());
+				animator.SetBool(aimHash, aiming && hasItem && !player.movementController.IsSprinting());
+				animator.SetBool("sprinting", player.movementController.IsSprinting() && hasItem);
+				animator.SetBool("holdItem", hasItem && !(player.itemInHand.GetItem() is Weapon));
+				animator.SetLayerWeight(1, hasItem ? DampWeight(1) : DampWeight(0));
 
-			TriggerPunch();
+				TriggerPunch();
+			}
+
 		}
 
 		private bool IsState(PlayerActionState state)
@@ -72,13 +77,17 @@ namespace Game
 
 		private void TriggerPunch()
 		{
-			if (Input.GetKeyDown(GameInputManager.PUNCH_KEYCODE) && !player.GetGameController().isGamePaused && !player.GetGameController().IsState(StateManager.State.INVENTORY))
+			if (player.gameInputManager.GetKeyDown(GameInputManager.PUNCH_KEYCODE) && !player.GetGameController().isGamePaused && !player.GetGameController().IsState(StateManager.State.INVENTORY))
 			{
 				if (!isPunching)
 				{
 					if (player.GetItemInHand() == null)
 					{
-						StartCoroutine("AnimatePunch");
+						StartCoroutine("AnimatePunch" , 2);
+						RegisterPunch(player.lookPoint);
+					} else if (!(player.itemInHand.GetItem() is Weapon))
+					{
+						StartCoroutine("AnimatePunch" , 3);
 						RegisterPunch(player.lookPoint);
 					}
 				}
@@ -86,7 +95,7 @@ namespace Game
 		}
 
 
-		IEnumerator AnimatePunch()
+		IEnumerator AnimatePunch(int layer)
 		{
 			float value = .1f;
 			float timer = 0;
@@ -104,10 +113,13 @@ namespace Game
 					break;
 				}
 
-				animator.SetLayerWeight(2, value);
+
+				animator.SetLayerWeight(layer, value);
 				yield return new WaitForSeconds(Time.deltaTime);
 			}
+			animator.SetLayerWeight(layer, 0);
 		}
+
 
 
 		private void RegisterPunch(Transform lookPoint)

@@ -134,6 +134,7 @@ namespace Game
 
 		private void CheckForMeleeAttack()
 		{
+			if (DebugController.DEBUG_MODE) return;
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray.origin, transform.forward,  out hitInfo , attackDistance))

@@ -24,6 +24,11 @@ namespace Game
 			ObjectSpawnerController.SpawnObjectInHand(w.objectID, itemInHand);
 		}
 
+		public void UnequipWeapon()
+		{
+			SetEquippedWeapon(null);
+		}
+
 
 
 		public void Attack(Transform transform)
@@ -50,6 +55,8 @@ namespace Game
 		{
 			return equippedWeapon;
 		}
+
+
 
 	}
 

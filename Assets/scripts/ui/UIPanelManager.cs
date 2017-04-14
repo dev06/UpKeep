@@ -17,6 +17,7 @@ namespace UI
 		private GameObject pausePanel;
 		private GameObject hudPanel;
 		private GameObject inventoryPanel;
+		private GameObject debugPanel;
 
 
 		public enum ActivePanel
@@ -25,6 +26,7 @@ namespace UI
 			PAUSE,
 			INVENTORY,
 			HUD,
+			DEBUG,
 		}
 
 
@@ -44,20 +46,18 @@ namespace UI
 			foreach (Transform child in transform)
 			{
 				gamePanels.Add(child.gameObject);
+				child.gameObject.SetActive(true);
 			}
 
 
 			pausePanel = transform.FindChild("PausePanel").gameObject;
 			hudPanel = transform.FindChild("HUD").gameObject;
 			inventoryPanel = transform.FindChild("Inventory").gameObject;
-
+			debugPanel = transform.FindChild("Debug").gameObject;
 		}
 
 
-		void Update ()
-		{
 
-		}
 
 		/// <summary>
 		/// Called everytime when the state of the game changes
@@ -88,6 +88,12 @@ namespace UI
 					SetPanelActive(inventoryPanel, true);
 					break;
 				}
+
+				case StateManager.State.DEBUG:
+				{
+					SetPanelActive(debugPanel, true);
+					break;
+				}
 			}
 		}
 
@@ -99,8 +105,12 @@ namespace UI
 		/// <param name="active"></param>
 		private void SetPanelActive(GameObject panel, bool active)
 		{
+			CanvasGroup canvasGroup = panel.GetComponent<CanvasGroup>();
+			canvasGroup.alpha = active ? 1 : 0;
+			canvasGroup.blocksRaycasts = active;
 
-			panel.SetActive(active);
+			panel.GetComponent<Container>().Enable();
+//			panel.SetActive(active);
 		}
 	}
 

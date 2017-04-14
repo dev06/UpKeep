@@ -3,7 +3,9 @@ using System.Collections;
 using Game;
 namespace UI
 {
-	public class InventoryContainer : MonoBehaviour {
+	public class InventoryContainer : Container {
+
+
 
 		private GameObject mainContainer;
 		private GameObject itemContainer;
@@ -18,6 +20,14 @@ namespace UI
 			descriptionContainer = mainContainer.transform.GetChild(1).gameObject;
 			characterContainer = mainContainer.transform.GetChild(2).gameObject;
 			actionContainer = mainContainer.transform.GetChild(3).gameObject;
+		}
+
+
+
+
+		public override void OnValidate()
+		{
+			base.OnValidate();
 		}
 	}
 }

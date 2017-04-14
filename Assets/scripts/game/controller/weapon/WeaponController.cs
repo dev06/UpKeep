@@ -3,7 +3,9 @@ using System.Collections;
 
 namespace Game
 {
-
+	/// <summary>
+	/// OBSOLETE : DO NOT USE
+	/// </summary>
 	public class WeaponController : MonoBehaviour {
 
 		public static Weapon EquippedWeapon;

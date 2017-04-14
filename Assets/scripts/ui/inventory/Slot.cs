@@ -75,8 +75,6 @@ namespace UI
 			{
 				EventManager.OnSlotSelect(selectedSlot);
 			}
-
-
 		}
 
 
@@ -174,6 +172,12 @@ namespace UI
 
 		public bool isEmpty() {
 			return item == null;
+		}
+
+
+		public Item GetItem()
+		{
+			return item;
 		}
 	}
 

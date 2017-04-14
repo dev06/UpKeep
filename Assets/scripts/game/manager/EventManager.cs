@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using UpkeepInput;
 using UI;
 namespace Game
 {
@@ -29,8 +29,15 @@ namespace Game
 		public static ManageItem OnDropItem;
 
 
+		public delegate void ManageQuickItemSlot(Item item, InventoryPanelButtonGroup.ButtonId buttonId);
+		public static ManageQuickItemSlot OnUpdateQuickItemSlot;
+
+
 		public delegate void ManageWeapon(Weapon weapon);
 		public static ManageWeapon OnFireWeapon;
+
+
+
 
 
 

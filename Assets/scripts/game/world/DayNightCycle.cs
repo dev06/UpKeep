@@ -28,7 +28,6 @@ namespace Game
 			TotalDay = TotalHour;
 			time = TotalHour / (TotalHour / startHour);
 			ambientColor = new Color(0, 0, 0, 1);
-			//SetAmbientColor(ambientIntensity);
 		}
 
 
@@ -49,7 +48,7 @@ namespace Game
 				ambientIntensity = Sin(rotation);
 				ambientIntensity = Mathf.Clamp(ambientIntensity, 0, 1);
 				SetAmbientColor(ambientIntensity);
-				transform.rotation = Quaternion.Euler(sunRotation);
+				transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(sunRotation), Time.deltaTime * 10f);
 			}
 		}
 
@@ -63,6 +62,8 @@ namespace Game
 			ambientColor.b = intensity;
 			RenderSettings.ambientSkyColor = ambientColor;
 			RenderSettings.ambientGroundColor = ambientColor;
+			float equator = Mathf.Clamp(intensity, .15f, .4f);
+			RenderSettings.ambientEquatorColor = new Color(equator, equator, equator);
 		}
 
 
@@ -72,5 +73,15 @@ namespace Game
 			return  Mathf.Sin((mydeg * Mathf.PI) / 180);
 		}
 
+
+		public void SetSpeed(float speed)
+		{
+			this.daySpeed = speed;
+		}
+
+		public void SetTime(float time)
+		{
+			this.time = time;
+		}
 	}
 }

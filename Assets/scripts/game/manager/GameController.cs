@@ -7,12 +7,13 @@ namespace Game
 
 		public static GameController Instance;
 
-
 		public StateManager stateManager;
 
 		public bool isGamePaused;
 
 		public StateManager.State gameState;
+
+		//public DebugController debugController;
 
 		void Awake()
 		{
@@ -27,13 +28,16 @@ namespace Game
 
 		void Start ()
 		{
-
+			//	debugController  = new DebugController();
 		}
 
 
 		void Update ()
 		{
 			isGamePaused =  GetGameState() == StateManager.State.PAUSE;
+
+			//	debugController.Update();
+
 		}
 
 

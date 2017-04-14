@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using GameUtility;
 using Game;
+using System.IO;
 namespace SystemTools
 {
 	/// <summary>
@@ -15,6 +16,7 @@ namespace SystemTools
 		public static string OBJECTS;
 		public static string CONSUMABLES;
 		public static string WEAPONS;
+		public static string MISC;
 
 
 		private void InitializeDatapath()
@@ -22,17 +24,58 @@ namespace SystemTools
 			OBJECTS = Application.dataPath + "/package/objects";
 			CONSUMABLES = OBJECTS + "/consumables";
 			WEAPONS = OBJECTS + "/weapons";
+			MISC = OBJECTS + "/misc";
 		}
 
 
 		void Awake ()
 		{
 			InitializeDatapath();
-			CreateObject( FetchObjectContents(GetFileContents(CONSUMABLES + "/snackbar/program.dat")));
-			CreateObject( FetchObjectContents(GetFileContents(CONSUMABLES + "/soda/program.dat")));
-			CreateObject( FetchObjectContents(GetFileContents(CONSUMABLES + "/healthpack/program.dat")));
-			CreateObject( FetchObjectContents(GetFileContents(WEAPONS + "/pistol/program.dat")));
+
+			CreateProgramFiles();
+
 		}
+
+
+		private void CreateProgramFiles()
+		{
+
+			foreach (string folder in GetAllDirectories(OBJECTS))
+			{
+				foreach (string file in System.IO.Directory.GetFiles(folder))
+				{
+					if ((file.Contains(".dat") || file.Contains(".txt")) && !file.Contains(".meta"))
+					{
+						string flippedName = file.Replace(@"\", @"/");
+						CreateObject( FetchObjectContents(GetFileContents(flippedName)));
+					}
+				}
+			}
+		}
+
+
+		public static List<string> GetAllDirectories(string directory)
+		{
+			List<string> directories = new List<string>();
+			foreach (string f in Directory.GetDirectories(directory, "*.*", SearchOption.AllDirectories))
+			{
+				directories.Add(f);
+			}
+			return directories;
+		}
+
+		private static List<string> GetAllFiles(string directory)
+		{
+			List<string> files = new List<string>();
+			foreach (string f in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
+			{
+				if ((f.Contains(".dat") || f.Contains(".txt")) && !f.Contains(".meta"))
+					files.Add(f);
+			}
+			return files;
+		}
+
+
 
 		public bool DoesFileExists(string path)
 		{
@@ -75,16 +118,22 @@ namespace SystemTools
 			switch (objectType)
 			{
 				case "Consumable":
-				{
-					ObjectDatabase.CreateConsumableObject(pair);
-					break;
-				}
+					{
+						ObjectDatabase.CreateConsumableObject(pair);
+						break;
+					}
 
 				case "Weapon":
-				{
-					ObjectDatabase.CreateWeaponObject(pair);
-					break;
-				}
+					{
+						ObjectDatabase.CreateWeaponObject(pair);
+						break;
+					}
+
+				case "Misc":
+					{
+						ObjectDatabase.CreateMiscObject(pair);
+						break;
+					}
 			}
 		}
 	}

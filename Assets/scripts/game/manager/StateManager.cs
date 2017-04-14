@@ -16,6 +16,7 @@ namespace Game
 			GAME,
 			PAUSE,
 			INVENTORY,
+			DEBUG,
 		}
 
 		public static StateManager Instance;
@@ -54,6 +55,11 @@ namespace Game
 			{
 				EventManager.SetState(state);
 			}
+		}
+
+		public bool IsState(State state)
+		{
+			return this.state == state;
 		}
 	}
 }

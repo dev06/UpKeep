@@ -47,12 +47,17 @@ namespace UpkeepInput
 
 		public virtual void OnPointerClick(PointerEventData data)
 		{
-
+			image.color = restColor;
 		}
 
 		public virtual void RegisterClick()
 		{
 
+		}
+
+		public virtual void OnDisable()
+		{
+			image.color = restColor;
 		}
 	}
 

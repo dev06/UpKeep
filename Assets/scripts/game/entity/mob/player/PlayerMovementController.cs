@@ -30,6 +30,8 @@ namespace Game
 		private float speed;
 		private float walkingSpeed;
 		private float sprintingSpeed;
+		private float gravity;
+		private bool freeze;
 		public void Initialize()
 		{
 			player = GetComponent<Player>();
@@ -40,11 +42,13 @@ namespace Game
 			mobChar = player.GetCharacteristics();
 			walkingSpeed = mobChar.GetFloat("WalkingSpeed");
 			sprintingSpeed = mobChar.GetFloat("SprintingSpeed");
+			gravity = 5.0f;
 		}
 
 
 		public void Jump()
 		{
+			if (DebugController.DEBUG_MODE) return;
 			PrepareJump();
 		}
 
@@ -61,7 +65,7 @@ namespace Game
 		{
 			while (jumpForce < jumpingHeight)
 			{
-				jumpForce += Time.deltaTime * 5.0f;
+				jumpForce += Time.deltaTime * gravity;
 				yield return new WaitForSeconds(Time.deltaTime);
 			}
 
@@ -71,15 +75,17 @@ namespace Game
 
 		public Vector3 GetMovement()
 		{
+
 			fallingAccleration = IsAirborne() ? fallingAccleration + Time.deltaTime : 1;
 			speed = IsSprinting() ? sprintingSpeed : walkingSpeed;
 			movement.x = gameInputManager.input.move.x * Time.deltaTime * this.speed;
 			movement.y = jumpForce * Physics.gravity.y * Time.deltaTime * fallingAccleration;
 			movement.z = gameInputManager.input.move.y * Time.deltaTime * this.speed;
+			if (freeze) return new Vector3(0, movement.y, 0);
 			isMoving = Mathf.Abs(movement.x) > 0 || Mathf.Abs(movement.z) > 0;
 
-			if (Input.GetKeyDown(GameInputManager.SPRINT_KEYCODE) && player.GetFloat("Stamina") > 0)	isSprinting = true;
-			if (player.GetFloat("Stamina") <= 0 || Input.GetKeyUp(GameInputManager.SPRINT_KEYCODE)) isSprinting = false;
+			if (player.gameInputManager.GetKeyDown(GameInputManager.SPRINT_KEYCODE) && player.GetFloat("Stamina") > 0 && IsMoving())	isSprinting = true;
+			if (player.GetFloat("Stamina") <= 0 || player.gameInputManager.GetKeyUp(GameInputManager.SPRINT_KEYCODE)) isSprinting = false;
 
 			return movement;
 		}
@@ -140,7 +146,25 @@ namespace Game
 		}
 
 
+		public void SetWalkingSpeed(float speed)
+		{
+			this.walkingSpeed = speed;
+		}
 
+		public void SetJumpingHeight(float jumpingHeight)
+		{
+			this.jumpingHeight = jumpingHeight;
+		}
+
+		public void SetGravity(float gravity)
+		{
+			this.gravity = gravity;
+		}
+
+		public void FreezeMovement(bool b)
+		{
+			this.freeze = b;
+		}
 	}
 
 }

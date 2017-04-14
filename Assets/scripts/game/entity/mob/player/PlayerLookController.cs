@@ -17,6 +17,7 @@ namespace Game
 		private float rotationX;
 		private float rotationY;
 		private Vector2 lookRotation;
+		private bool freeze;
 
 		public void Initialize()
 		{
@@ -27,12 +28,18 @@ namespace Game
 
 		public Vector2 GetLookRotation()
 		{
+			if (freeze) return lookRotation;
 			rotationX = gameInputManager.input.look.x * mouseXSensitvity;
 			rotationY -= gameInputManager.input.look.y * mouseYSensitvity;
 			rotationY = Mathf.Clamp(rotationY, clampMin, clampMax);
 			lookRotation.x = rotationX;
 			lookRotation.y = rotationY;
 			return lookRotation;
+		}
+
+		public void FreezeRotation(bool b)
+		{
+			this.freeze = b;
 		}
 
 	}

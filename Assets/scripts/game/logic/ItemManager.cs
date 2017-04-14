@@ -9,6 +9,9 @@ namespace Game
 	/// </summary>
 	public class ItemManager
 	{
+
+		public static Item currentItemInHand;
+
 		/// <summary>
 		/// Uses an item
 		/// </summary>
@@ -41,5 +44,13 @@ namespace Game
 				EventManager.OnDropItem(item);
 			}
 		}
+
+
+		public static void EquipItem(Item item, Transform itemInHand)
+		{
+			ObjectSpawnerController.SpawnObjectInHand(item.objectID, itemInHand);
+		}
+
+
 	}
 }

@@ -61,18 +61,31 @@ namespace UpkeepInput
 					}
 					break;
 				}
+
+				case StateManager.State.DEBUG:
+				{
+					look.x = 0;
+					look.y = 0;
+					move.x = 0;
+					move.y = 0;
+					if (!cursor.isVisible)
+					{
+						cursor.ShowCursor();
+					}
+					break;
+				}
 			}
 
-			if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+			if (UnityEngine.Input.GetKeyDown(GameInputManager.PAUSE_KEYCODE))
 			{
 				StateManager.Instance.SetState(StateManager.Instance.state == StateManager.State.PAUSE ? StateManager.State.GAME : StateManager.State.PAUSE);
 			}
-			if (UnityEngine.Input.GetKeyDown(KeyCode.Tab))
+			if (UnityEngine.Input.GetKeyDown(GameInputManager.INVENTORY_ACTIVE_KEYCODE))
 			{
 				StateManager.Instance.SetState(StateManager.Instance.state == StateManager.State.INVENTORY ? StateManager.State.GAME : StateManager.State.INVENTORY);
 			}
 
-			if (UnityEngine.Input.GetKeyDown(KeyCode.F))
+			if (UnityEngine.Input.GetKeyDown(GameInputManager.PICKUPITEM_KEYCODE))
 			{
 				if (focusedObject == null)
 				{
@@ -94,7 +107,36 @@ namespace UpkeepInput
 					Destroy(focusedObject.objectIdentifier.transform.gameObject);
 				}
 			}
+
+			if (UnityEngine.Input.GetKeyDown(GameInputManager.DEBUG_KEYCODE))
+			{
+				StateManager.Instance.SetState(StateManager.Instance.state == StateManager.State.DEBUG ? StateManager.State.GAME : StateManager.State.DEBUG);
+			}
+
+		}
+
+		public bool GetMouseButton(int mouse)
+		{
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			return Input.GetMouseButtonDown(mouse);
+		}
+
+		public bool GetKeyDown(KeyCode key)
+		{
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			return Input.GetKeyDown(key);
+		}
+
+		public bool GetKeyUp(KeyCode key)
+		{
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			return Input.GetKeyUp(key);
+		}
+
+		public bool GetKey(KeyCode key)
+		{
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			return Input.GetKey(key);
 		}
 	}
-
 }

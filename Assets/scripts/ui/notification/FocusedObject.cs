@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using Game;
+using UpkeepInput;
 namespace UI
 {
 	[RequireComponent (typeof(CanvasGroup))]
@@ -38,7 +39,7 @@ namespace UI
 		{
 			this.objectIdentifier = objectIdentifier;
 			canvasGroup.alpha = 1;
-			text.text = "Press [F] to pickup " + objectIdentifier.GetObject().objectName;
+			text.text = "Press [" +  GameInputManager.PICKUPITEM_KEYCODE  +  "] to pickup " + objectIdentifier.GetObject().objectName;
 		}
 
 
