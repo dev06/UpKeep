@@ -8,6 +8,9 @@ namespace Game
 	public class CameraController : MonoBehaviour
 	{
 
+		[Range (0f, .4f)]
+		public float fovDampTime = .03f;
+
 		private Player player;
 		public Camera camera;
 		public LayerMask detectionMask;
@@ -17,6 +20,7 @@ namespace Game
 		public float xSpeed = 10f;
 		public float ySpeed = 7f;
 		public float amplitude = .001f;
+
 
 		private Vector3 defaultPosition;
 		private Vector3 bobPosition;
@@ -28,7 +32,8 @@ namespace Game
 		private float fowardMultiplier;
 		private float headRotateMultiplier;
 		private float acceleration;
-
+		private float targetFOV;
+		private float fovVelocity;
 		private BlurOptimized blur;
 
 		public void Initialize()
@@ -36,6 +41,7 @@ namespace Game
 			camera = transform.GetComponent<Camera>();
 			blur = GetComponent<BlurOptimized>();
 			defaultPosition = transform.localPosition;
+			targetFOV = camera.fieldOfView;
 			focusedObject = FindObjectOfType<FocusedObject>();
 
 		}
@@ -51,7 +57,7 @@ namespace Game
 			}
 
 			UpdateCameraTransform();
-			blur.enabled = player.stateManager.IsState(StateManager.State.DEBUG);
+			blur.enabled = player.stateManager.IsState(StateManager.State.DEBUG) || player.stateManager.IsState(StateManager.State.PAUSE);
 			UpdateCameraRecoil();
 		}
 
@@ -62,7 +68,8 @@ namespace Game
 
 		private void UpdateCameraTransform()
 		{
-			transform.localPosition = Vector3.Lerp(transform.localPosition, bobPosition + Vector3.forward * recoilValue * fowardMultiplier, Time.deltaTime * 3.4f);
+			camera.fieldOfView = Mathf.SmoothDamp(camera.fieldOfView , targetFOV, ref fovVelocity, fovDampTime);
+			transform.localPosition = Vector3.Lerp(transform.localPosition, defaultPosition  + bobPosition + Vector3.forward * recoilValue * fowardMultiplier, Time.deltaTime * 3.4f);
 			transform.localRotation = Quaternion.Lerp(transform.localRotation, Quaternion.Euler(new Vector3(-recoilValue * headRotateMultiplier , 0, 0)), Time.deltaTime * speed);
 		}
 
@@ -85,8 +92,9 @@ namespace Game
 			}
 
 			float xCam = Mathf.Sin(timer * xSpeed) * amplitude;
-			float yCam = -Mathf.Abs(Mathf.Cos(timer * ySpeed)) * amplitude;
-			bobPosition = defaultPosition + new Vector3(xCam * multiplier, yCam * multiplier, 0);
+			float yCam = Mathf.Abs(Mathf.Cos(timer * ySpeed)) * amplitude;
+			bobPosition = new Vector3(xCam * multiplier, yCam * multiplier, 0);
+			//Debug.Log(bobPosition);
 		}
 
 		public void TriggerRecoil()
@@ -117,6 +125,11 @@ namespace Game
 
 		}
 
+		public void SetFOV(float fov)
+		{
+			targetFOV = fov;
+		}
+
 
 
 		public void ResetBob()
@@ -124,7 +137,7 @@ namespace Game
 			timer = 0;
 			float xCam = Mathf.Sin(timer * xSpeed) * amplitude;
 			float yCam = -Mathf.Abs(Mathf.Cos(timer * ySpeed)) * amplitude;
-			bobPosition = defaultPosition + new Vector3(xCam , yCam, 0);
+			bobPosition = new Vector3(0 , 0, 0);
 		}
 
 

@@ -3,6 +3,7 @@ Type:Misc
 Name:Flash Light
 Quantity:0
 Description: Helps you see
+AnimationLayer:1
 
 Location:prefab/objects/misc/flashlight
 

@@ -15,6 +15,7 @@ namespace UpkeepInput
 		public static KeyCode PUNCH_KEYCODE = KeyCode.Mouse0;
 		public static KeyCode DEBUG_KEYCODE = KeyCode.BackQuote;
 		public static KeyCode JUMP_KEYCODE = KeyCode.Space;
+		public static KeyCode ITEM_USE_KEYCODE = KeyCode.Mouse1;
 		public static KeyCode PICKUPITEM_KEYCODE = KeyCode.E;
 		public static KeyCode INVENTORY_ACTIVE_KEYCODE = KeyCode.Tab;
 		public static KeyCode PAUSE_KEYCODE = KeyCode.Escape;

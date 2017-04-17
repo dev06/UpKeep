@@ -10,17 +10,21 @@ namespace UI
 
 		private CanvasGroup canvasGroup;
 
+		private CanvasGroup ItemUseContainer;
 		void OnEnable()
 		{
 			EventManager.OnSlotSelect += OnSlotSelect;
 			EventManager.OnUpdateInventoryUI += OnUpdateInventoryUI;
+			EventManager.OnQuickSlotPressed += OnQuickSlotPressed;
 		}
 
 		void OnDisable()
 		{
 			EventManager.OnSlotSelect -= OnSlotSelect;
 			EventManager.OnUpdateInventoryUI -= OnUpdateInventoryUI;
-			Hide();
+			EventManager.OnQuickSlotPressed -= OnQuickSlotPressed;
+			Hide(canvasGroup);
+			Hide(ItemUseContainer);
 		}
 
 
@@ -28,7 +32,9 @@ namespace UI
 		void Start ()
 		{
 			canvasGroup = GetComponent<CanvasGroup>();
-			Hide();
+			ItemUseContainer = transform.GetChild(1).GetComponent<CanvasGroup>();
+			Hide(canvasGroup);
+			Hide(ItemUseContainer);
 		}
 
 		void OnSlotSelect(Slot slot)
@@ -37,14 +43,38 @@ namespace UI
 			{
 				if (slot.isEmpty())
 				{
-					Hide();
+					Hide(canvasGroup);
 				} else
 				{
-					Show();
+					Show(canvasGroup);
 				}
+				UpdateItemUseContainer(slot.GetItem());
 			} else
 			{
-				Hide();
+				Hide(canvasGroup);
+			}
+
+
+		}
+
+		void OnQuickSlotPressed(Item item)
+		{
+
+			UpdateItemUseContainer(item);
+		}
+
+		public	void UpdateItemUseContainer(Item item)
+		{
+
+			if (item == null || !(item is Consumable))
+			{
+				Hide(ItemUseContainer);
+			} else
+			{
+				if (item is Consumable)
+				{
+					Show(ItemUseContainer);
+				}
 			}
 		}
 
@@ -53,20 +83,21 @@ namespace UI
 		{
 			if (item == null)
 			{
-				Hide();
+				Hide(canvasGroup);
 			}
+
 		}
 
-		void Hide()
+		void Hide(CanvasGroup group)
 		{
-			canvasGroup.alpha = 0;
-			canvasGroup.blocksRaycasts = false;
+			group.alpha = 0;
+			group.blocksRaycasts = false;
 		}
 
-		void Show()
+		void Show(CanvasGroup group)
 		{
-			canvasGroup.alpha = 1;
-			canvasGroup.blocksRaycasts = true;
+			group.alpha = 1;
+			group.blocksRaycasts = true;
 		}
 	}
 

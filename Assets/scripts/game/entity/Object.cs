@@ -30,6 +30,7 @@ namespace Game
 		public Sprite objectSprite;
 		public string objectDescription;
 		public int objectQuantity;
+		public int objectAnimationLayer;
 	}
 
 

@@ -23,7 +23,6 @@ namespace UpkeepInput
 		{
 
 
-
 			switch (StateManager.Instance.state)
 			{
 				case StateManager.State.GAME:
@@ -117,25 +116,25 @@ namespace UpkeepInput
 
 		public bool GetMouseButton(int mouse)
 		{
-			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) { return false; }
 			return Input.GetMouseButtonDown(mouse);
 		}
 
 		public bool GetKeyDown(KeyCode key)
 		{
-			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) { return false; }
 			return Input.GetKeyDown(key);
 		}
 
 		public bool GetKeyUp(KeyCode key)
 		{
-			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) { return false; }
 			return Input.GetKeyUp(key);
 		}
 
 		public bool GetKey(KeyCode key)
 		{
-			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) return false;
+			if (StateManager.Instance.IsState(StateManager.State.DEBUG)) { return false; }
 			return Input.GetKey(key);
 		}
 	}

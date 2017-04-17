@@ -32,7 +32,7 @@ namespace Game
 
 			float xCam = Mathf.Sin(timer * xSpeed) * amplitude;
 			float yCam = -Mathf.Abs((Mathf.Cos(timer *  ySpeed) * amplitude) / 2.0f);
-			transform.localPosition = new Vector3(xCam * multiplier,  1 + (yCam * multiplier), transform.localPosition.z);
+			//	transform.localPosition = new Vector3(xCam * multiplier,  1 + (yCam * multiplier), transform.localPosition.z);
 		}
 	}
 

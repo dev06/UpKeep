@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 namespace Game
 {
 	[RequireComponent (typeof(Animator))]
@@ -11,7 +11,7 @@ namespace Game
 
 		protected MobCharacteristics mobChar;
 
-
+		public List<Ragdoll> bodyparts;
 
 		protected Animator animator;
 
@@ -32,12 +32,24 @@ namespace Game
 
 		}
 
-		public void DoDamage(float damage)
+		public virtual void DoDamage(float damage)
 		{
 			mobChar.SetFloat("Health", mobChar.GetFloat("Health") - damage);
 			if (isDead())
 			{
-				Destroy(gameObject);
+
+
+				if (bodyparts.Count > 0)
+				{
+					foreach (Ragdoll rd in bodyparts)
+					{
+						rd.EnableRagdoll = true;
+					}
+				}
+
+
+
+				//Destroy(gameObject);
 			}
 		}
 

@@ -11,6 +11,9 @@ namespace Game
 		public float memory = 10.0f;
 
 
+
+
+
 		private Transform target;
 		private NavMeshAgent agent;
 		private bool targetInMemory;
@@ -19,7 +22,7 @@ namespace Game
 		private float noiseDistance = 1;
 		private float attackDistance = .8f;
 		private float defaultDistance;
-		private int walkHash = Animator.StringToHash("isWalking");
+		private int walkHash = Animator.StringToHash("playerInProximity");
 
 
 		void OnEnable()
@@ -66,7 +69,7 @@ namespace Game
 
 		IEnumerator Track()
 		{
-			float delay = .01f;
+			float delay = .001f;
 
 			while (agent != null && target != null)
 			{
@@ -109,6 +112,26 @@ namespace Game
 		}
 
 
+		public override void DoDamage(float damage)
+		{
+			base.DoDamage(damage);
+
+			if (isDead())
+			{
+				GetComponent<CapsuleCollider>().enabled = false;
+				GetComponent<NavMeshAgent>().enabled = false;
+				GetComponent<Animator>().enabled = false;
+				GetComponent<MeshCollider>().enabled = false;
+				StopAllCoroutines();
+				EventManager.OnFireWeapon -= OnFireWeapon;
+
+
+				StartCoroutine("DestroyObject" , 10);
+
+			}
+		}
+
+
 		private void ResumeAgent()
 		{
 
@@ -134,7 +157,7 @@ namespace Game
 
 		private void CheckForMeleeAttack()
 		{
-			if (DebugController.DEBUG_MODE) return;
+			if (DebugController.DEBUG_MODE) { return; }
 			Ray ray = new Ray(transform.position, transform.forward);
 			RaycastHit hitInfo;
 			if (Physics.Raycast(ray.origin, transform.forward,  out hitInfo , attackDistance))
@@ -158,8 +181,24 @@ namespace Game
 		void OnDisable()
 		{
 			StopAllCoroutines();
-			EventManager.OnFireWeapon -= OnFireWeapon;
+		}
+
+		IEnumerator DestroyObject(float delay)
+		{
+			yield return new WaitForSeconds(delay);
+
+			while (true)
+			{
+				if (Vector3.Distance(transform.position, target.transform.position) > 10)
+				{
+					Destroy(gameObject);
+				}
+
+				yield return new WaitForSeconds(1);
+			}
 
 		}
+
+
 	}
 }

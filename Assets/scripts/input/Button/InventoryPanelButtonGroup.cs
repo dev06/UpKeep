@@ -14,8 +14,7 @@ namespace UpkeepInput
 		{
 			EQUIP,
 			DROP,
-			PRIMARY,
-			SECONDARY,
+			USE,
 		}
 
 		public ButtonId buttonId;
@@ -34,8 +33,8 @@ namespace UpkeepInput
 		void Start ()
 		{
 			base.Start();
-		}
 
+		}
 
 		public override void OnPointerEnter(PointerEventData data)
 		{
@@ -49,11 +48,15 @@ namespace UpkeepInput
 
 		}
 
+		void Update()
+		{
+
+		}
+
 		public override void OnPointerClick(PointerEventData data)
 		{
 			base.OnPointerClick(data);
 			RegisterClick();
-			UpdateEquipButton();
 		}
 
 		private void RegisterClick()
@@ -64,10 +67,14 @@ namespace UpkeepInput
 			{
 				case ButtonId.EQUIP:
 				{
+
 					if (Slot.selectedSlot != null)
 					{
-						ItemManager.UseItem(Slot.selectedSlot.item);
+						ItemManager.EquipItem(Slot.selectedSlot.item);
 					}
+
+					UpdateText();
+
 					break;
 				}
 
@@ -79,31 +86,9 @@ namespace UpkeepInput
 					}
 					break;
 				}
-
-				case ButtonId.PRIMARY:
+				case ButtonId.USE:
 				{
-					if (Slot.selectedSlot != null)
-					{
-						if (EventManager.OnUpdateQuickItemSlot != null)
-						{
-							EventManager.OnUpdateQuickItemSlot(Slot.selectedSlot.item, buttonId);
-						}
-
-					}
-
-					break;
-				}
-
-				case ButtonId.SECONDARY:
-				{
-					if (Slot.selectedSlot != null)
-					{
-						if (EventManager.OnUpdateQuickItemSlot != null)
-						{
-							EventManager.OnUpdateQuickItemSlot(Slot.selectedSlot.item, buttonId);
-						}
-					}
-
+					ItemManager.UseItem(Slot.selectedSlot.item);
 					break;
 				}
 			}
@@ -112,34 +97,35 @@ namespace UpkeepInput
 
 		void OnSlotSelect(Slot s)
 		{
-			UpdateEquipButton();
+			if (Slot.selectedSlot == null) { return; }
+			if (Slot.selectedSlot.GetItem() == null) { return; }
+			UpdateText();
 		}
 
-		void UpdateEquipButton()
+		public void UpdateText()
 		{
-			if (buttonId == ButtonId.EQUIP)
-			{
-				Slot s = Slot.selectedSlot;
-				if (s == null) return;
-				if (s.GetItem() == null) return;
-				Item itemInHand = s.GetItem();
+
+			if (buttonId == ButtonId.EQUIP) {
+
 
 				Text text = transform.GetChild(0).GetComponent<Text>();
 
-				if (itemInHand is Consumable)
-				{
-					text.text = "Consume";
-					return;
-				}
 
-				if (ItemManager.currentItemInHand == null || ItemManager.currentItemInHand != itemInHand)
+				if (QuickSlot.ActiveSlot.GetItem() == null)
 				{
 					text.text = "Equip";
 				} else
 				{
-					text.text = "Unequip";
+					if (QuickSlot.ActiveSlot.GetItem().objectID != Slot.selectedSlot.GetItem().objectID)
+					{
+						text.text = "Equip";
+					} else
+					{
+						text.text = "Unequip";
+					}
 				}
 			}
 		}
+
 	}
 }

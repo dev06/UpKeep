@@ -14,6 +14,7 @@ namespace Game
 		public float forwardRecoilMult;
 		public float upwardRecoilMult;
 		public float noise;
+		public float aimFOV;
 
 		public EWeaponObject eWeaponObject;
 

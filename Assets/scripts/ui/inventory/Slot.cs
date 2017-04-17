@@ -11,6 +11,7 @@ namespace UI
 
 		public Color slotRestColor;
 		public Color slotHoverColor;
+		public Color slotActiveColor;
 
 		public static Slot selectedSlot;
 		public bool hovering;
@@ -33,8 +34,16 @@ namespace UI
 			backgroundImage.color = slotRestColor;
 		}
 
+
+		void OnEnable()
+		{
+			EventManager.OnQuickSlotPressed += OnQuickSlotPressed;
+		}
+
 		void OnDisable()
 		{
+
+			EventManager.OnQuickSlotPressed -= OnQuickSlotPressed;
 
 			if (selectedSlot != null)
 			{
@@ -56,26 +65,9 @@ namespace UI
 
 		public virtual void OnPointerClick(PointerEventData data)
 		{
-			selectedSlot = this;
-
-			if (selectedSlot.isEmpty())
-			{
-				container.Hide();
-				selectedSlot = null;
-			} else
-			{
-				container.Show();
-				container.UpdateContents(selectedSlot.item);
-			}
-			if (container != null && selectedSlot != null)
-			{
-				container.UpdateContents(selectedSlot.item);
-			}
-			if (EventManager.OnSlotSelect != null)
-			{
-				EventManager.OnSlotSelect(selectedSlot);
-			}
+			UpdateSlotOnClick();
 		}
+
 
 
 		public virtual void OnPointerEnter(PointerEventData data)
@@ -168,7 +160,48 @@ namespace UI
 
 			objectImage.enabled = !isEmpty();
 
+
+
 		}
+
+
+		void UpdateSlotOnClick()
+		{
+			selectedSlot = this;
+
+			if (selectedSlot.isEmpty())
+			{
+				container.Hide();
+				selectedSlot = null;
+			} else
+			{
+				container.Show();
+				container.UpdateContents(selectedSlot.item);
+			}
+			if (container != null && selectedSlot != null)
+			{
+				container.UpdateContents(selectedSlot.item);
+			}
+			if (EventManager.OnSlotSelect != null)
+			{
+				EventManager.OnSlotSelect(selectedSlot);
+			}
+
+
+		}
+
+
+		void OnQuickSlotPressed(Item item)
+		{
+			//if (item == null || GetItem() == null) { return; }
+			if (GetItem() == item)
+			{
+				UpdateSlotOnClick();
+			}
+		}
+
+
+
 
 		public bool isEmpty() {
 			return item == null;

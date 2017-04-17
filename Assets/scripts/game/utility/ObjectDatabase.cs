@@ -22,6 +22,7 @@ namespace GameUtility
 			consumableObject.healthGain = float.Parse(GetValue(pair, "HealthGain"));
 			consumableObject.thirstGain = float.Parse(GetValue(pair, "ThirstGain"));
 			consumableObject.staminaGain = float.Parse(GetValue(pair, "StaminaGain"));
+			consumableObject.objectAnimationLayer =  int.Parse(GetValue(pair, "AnimationLayer"));
 			consumableObject.objectPrefab = (GameObject)Resources.Load(consumableObject.packagePath + "/prefab");
 			consumableObject.objectSprite = Resources.Load<Sprite>(consumableObject.packagePath + "/sprite");
 			if (consumableObject.objectQuantity > 0) { InventoryManager.Instance.AddItem(consumableObject); }
@@ -44,7 +45,8 @@ namespace GameUtility
 			weapon.forwardRecoilMult = float.Parse(GetValue(pair, "ForwardRecoilMult"));
 			weapon.upwardRecoilMult = float.Parse(GetValue(pair, "UpwardRecoilMult"));
 			weapon.noise = float.Parse(GetValue(pair, "Noise"));
-
+			weapon.objectAnimationLayer =  int.Parse(GetValue(pair, "AnimationLayer"));
+			weapon.aimFOV = int.Parse(GetValue(pair, "AimFOV"));
 			weapon.objectPrefab = (GameObject)Resources.Load(weapon.packagePath + "/prefab");
 			weapon.objectSprite = Resources.Load<Sprite>(weapon.packagePath + "/sprites" +  "/sprite");
 			objectList.Add(weapon);
@@ -62,6 +64,7 @@ namespace GameUtility
 			misc.objectDescription = GetValue(pair, "Description");
 			misc.objectSprite = Resources.Load<Sprite>(misc.packagePath + "/sprites" + "/sprite");
 			misc.objectPrefab = (GameObject)Resources.Load(misc.packagePath + "/prefab");
+			misc.objectAnimationLayer =  int.Parse(GetValue(pair, "AnimationLayer"));
 			objectList.Add(misc);
 		}
 
@@ -92,7 +95,7 @@ namespace GameUtility
 				}
 			}
 
-			return "";
+			return "-1";
 		}
 	}
 

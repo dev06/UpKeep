@@ -25,6 +25,8 @@ namespace Game
 		private float layerWeight;
 		private float layerWeightVel;
 		private bool isPunching;
+		private Item previousHeldItem;
+		private bool IsLayerWeightDampActive;
 		private float punchingSpeed = 12f;
 		private float punchDamage = 15;
 
@@ -33,7 +35,12 @@ namespace Game
 
 
 		private int walkHash = Animator.StringToHash("walk");
+		private int sprintHash = Animator.StringToHash("sprinting");
+
 		private int aimHash = Animator.StringToHash("aim");
+		private int holdItem1Hand = Animator.StringToHash("hold_item_1_hand");
+		private int holdWeapon2Hand = Animator.StringToHash("hold_weapon_2_hand");
+
 
 
 		public void Initialize()
@@ -46,19 +53,98 @@ namespace Game
 
 		public void UpdatePlayerAction()
 		{
+
+
 			if (DebugController.DEBUG_MODE == false)
 			{
+
+				Item item = player.itemInHand.GetItem();
 				bool hasItem = player.itemInHand.GetItem() != null;
+				bool isFireArm = hasItem && (player.itemInHand.GetItem() is Weapon);
 				bool aiming = Input.GetKey(GameInputManager.AIM_KEYCODE);
 
-				animator.SetBool(walkHash, player.movementController.IsMoving());
-				animator.SetBool(aimHash, aiming && hasItem && !player.movementController.IsSprinting());
-				animator.SetBool("sprinting", player.movementController.IsSprinting() && hasItem);
-				animator.SetBool("holdItem", hasItem && !(player.itemInHand.GetItem() is Weapon));
-				animator.SetLayerWeight(1, hasItem ? DampWeight(1) : DampWeight(0));
+				if (hasItem)
+				{
 
-				TriggerPunch();
+					if (previousHeldItem != null)
+					{
+						if (previousHeldItem.objectID != player.itemInHand.GetItem().objectID)
+						{
+							if (!IsLayerWeightDampActive) {
+
+								StartCoroutine("LayerWeight");
+							}
+						}
+					} else
+					{
+						if (!IsLayerWeightDampActive) {
+
+							StartCoroutine("LayerWeight");
+						}
+					}
+				}
+
+				if (previousHeldItem != null && player.itemInHand.GetItem() == null)
+				{
+					if (!IsLayerWeightDampActive) {
+
+						StartCoroutine("LayerWeight");
+					}
+				}
+
+				TriggerPunch(player.itemInHand.GetItem());
+				previousHeldItem = player.itemInHand.GetItem();
+				animator.SetBool(walkHash, player.movementController.IsMoving());
+				animator.SetBool(sprintHash, player.movementController.IsSprinting());
+				animator.SetBool(aimHash, aiming);
+
+				if (item is Weapon)
+				{
+					Weapon w = (Weapon)item;
+					player.cameraController.SetFOV(aiming ? w.aimFOV : 70);
+				}
+
+
 			}
+		}
+
+
+		IEnumerator LayerWeight()
+		{
+			IsLayerWeightDampActive = true;
+			float value = 0;
+
+			if (previousHeldItem != null)
+			{
+				int l = FindAnimationLayer(previousHeldItem.objectID);
+				animator.SetLayerWeight(l, 0);
+			}
+
+
+			if (player.itemInHand.GetItem() != null)
+			{
+				int layer = FindAnimationLayer(player.itemInHand.GetItem().objectID);
+				while (value < 1)
+				{
+					value += Time.deltaTime * 5.0f;
+					animator.SetLayerWeight(layer, value);
+					yield return new WaitForSeconds(Time.deltaTime);
+				}
+				animator.SetLayerWeight(layer, 1);
+
+			} else
+			{
+				yield return  null;
+			}
+
+
+
+
+			IsLayerWeightDampActive = false;
+		}
+
+		public void LateUpdatePlayerAction()
+		{
 
 		}
 
@@ -75,50 +161,24 @@ namespace Game
 		}
 
 
-		private void TriggerPunch()
+		private void TriggerPunch(Item item)
 		{
+
 			if (player.gameInputManager.GetKeyDown(GameInputManager.PUNCH_KEYCODE) && !player.GetGameController().isGamePaused && !player.GetGameController().IsState(StateManager.State.INVENTORY))
 			{
-				if (!isPunching)
+				RegisterPunch(player.lookPoint);
+				animator.SetTrigger("punch_tg");
+
+				if (item == null)
 				{
-					if (player.GetItemInHand() == null)
-					{
-						StartCoroutine("AnimatePunch" , 2);
-						RegisterPunch(player.lookPoint);
-					} else if (!(player.itemInHand.GetItem() is Weapon))
-					{
-						StartCoroutine("AnimatePunch" , 3);
-						RegisterPunch(player.lookPoint);
-					}
+					animator.SetLayerWeight(1, 1);
+				} else
+				{
+					animator.SetLayerWeight(1, 0);
 				}
 			}
 		}
 
-
-		IEnumerator AnimatePunch(int layer)
-		{
-			float value = .1f;
-			float timer = 0;
-			bool complete = false;
-			isPunching = true;
-
-			while (!complete)
-			{
-				timer += Time.deltaTime * punchingSpeed;
-				value = Mathf.Sin(timer) ;
-				if (value < 0)
-				{
-					complete = true;
-					isPunching = false;
-					break;
-				}
-
-
-				animator.SetLayerWeight(layer, value);
-				yield return new WaitForSeconds(Time.deltaTime);
-			}
-			animator.SetLayerWeight(layer, 0);
-		}
 
 
 
@@ -135,16 +195,44 @@ namespace Game
 					return;
 				}
 
-
-				if ((zombie)hitObject.GetComponent<Mob>() != null)
+				try
 				{
-					zombie z = (zombie)hitObject.GetComponent<Mob>();
-					z.DoDamage(punchDamage);
+					if ((zombie)hitObject.GetComponent<Mob>() != null)
+					{
+						zombie z = (zombie)hitObject.GetComponent<Mob>();
+						z.DoDamage(punchDamage);
+					}
+				} catch (System.Exception e)
+				{
+
 				}
+
+
 			}
 		}
 
 
+		private int FindAnimationLayer(int objectID)
+		{
+
+			for (int i = 2 ; i < animator.layerCount; i++)
+			{
+				string layerName = animator.GetLayerName(i);
+				try
+				{
+					string[] data = layerName.Split('_');
+					if (int.Parse(data[1]) == objectID)
+					{
+						return i;
+					}
+				} catch (System.Exception e)
+				{
+
+				}
+			}
+
+			return -1;
+		}
 
 
 		public void SetActionState(PlayerActionState state)

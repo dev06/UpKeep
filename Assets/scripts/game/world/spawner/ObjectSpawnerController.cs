@@ -48,7 +48,7 @@ namespace Game
 				clone.transform.localPosition = inHand.transform.localPosition;
 				clone.transform.localScale = inHand.transform.localScale;
 				clone.transform.localRotation = inHand.transform.localRotation;
-				clone.layer = MasterVar.LAYER_MOB;
+				clone.layer = MasterVar.LAYER_ITEMINHAND;
 			}
 
 		}

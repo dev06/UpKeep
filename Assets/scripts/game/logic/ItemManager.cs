@@ -16,17 +16,12 @@ namespace Game
 		/// Uses an item
 		/// </summary>
 		/// <param name="item"></param>
-		public static void UseItem(Item item)
+		public static void EquipItem(Item item)
 		{
-			if (item.objectType == ObjectType.Consumable)
-			{
-				// when using an item only remove the item from inventory if that item is consumable
-				InventoryManager.Instance.RemoveItem(item);
-			}
 
-			if (EventManager.OnUseItem != null)
+			if (EventManager.OnEquipItem != null)
 			{
-				EventManager.OnUseItem(item);
+				EventManager.OnEquipItem(item);
 			}
 		}
 
@@ -46,10 +41,26 @@ namespace Game
 		}
 
 
-		public static void EquipItem(Item item, Transform itemInHand)
+		public static void UseItem(Item item)
+		{
+
+
+
+
+			if (EventManager.OnUseItem != null)
+			{
+				EventManager.OnUseItem(item);
+			}
+
+		}
+
+
+		public static void EquipItemInHand(Item item, Transform itemInHand)
 		{
 			ObjectSpawnerController.SpawnObjectInHand(item.objectID, itemInHand);
 		}
+
+
 
 
 	}

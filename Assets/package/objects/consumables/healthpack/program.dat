@@ -3,7 +3,7 @@ Type:Consumable
 Name:Health Pack
 Quantity:0
 Description: Helps you heal
-
+AnimationLayer:3
 Location:prefab/objects/consumables/healthpack
 
 HealthGain:50

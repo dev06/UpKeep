@@ -105,11 +105,18 @@ namespace Game
 
 			if (gameInputManager.GetMouseButton(0) && stateManager.state != StateManager.State.INVENTORY && !movementController.IsSprinting())
 			{
-				//	WeaponController.Attack(Camera.main.transform);
+
 				weaponController.Attack(Camera.main.transform);
 				cameraController.TriggerRecoil();
 
 			}
+		}
+
+
+		private void LateUpdate()
+		{
+
+			actionController.LateUpdatePlayerAction();
 		}
 
 
@@ -150,32 +157,41 @@ namespace Game
 		}
 
 
+
+
 		void OnUseItem(Item item)
 		{
+			if (item == null) { return; }
 			if (item.objectType == ObjectType.Consumable)
 			{
+				InventoryManager.Instance.RemoveItem(item);
 				UseConsumable((Consumable)item);
 				return;
 			}
 
+			// if (itemInHand.GetItem() == null)
+			// {
+			// 	EquipItem(item);
+			// }
 
-			if (itemInHand.GetItem() == null)
-			{
-				EquipItem(item);
-			} else
-			{
-				if (item.objectID != itemInHand.GetItem().objectID)
-				{
-					UnequipItem();
+			//EquipItem(item);
+			// if (itemInHand.GetItem() == null)
+			// {
+			// 	EquipItem(item);
 
+			// } else
+			// {
+			// 	if (item.objectID != itemInHand.GetItem().objectID)
+			// 	{
+			// 		UnequipItem();
 
+			// 		EquipItem(item);
 
-					EquipItem(item);
-				} else
-				{
-					UnequipItem();
-				}
-			}
+			// 	} else
+			// 	{
+			// 		UnequipItem();
+			// 	}
+			// }
 
 			ItemManager.currentItemInHand = itemInHand.GetItem();
 		}
@@ -199,28 +215,36 @@ namespace Game
 		void OnObjectPickup(Game.Object obj)
 		{
 			// Actually puts the weapon in hand if the hand is empty
-			if (obj is Weapon && itemInHand.GetItem() == null)
-			{
-				Weapon w = (Weapon)obj;
-				weaponController.EquipWeapon(w, itemInHand.transform);
-				cameraController.SetRecoilWeaponValue(w);
-				itemInHand.SetItem((Item)obj);
-			}
-			ItemManager.currentItemInHand = itemInHand.GetItem();
+			// if (obj is Weapon && itemInHand.GetItem() == null)
+			// {
+			// 	Weapon w = (Weapon)obj;
+			// 	weaponController.EquipWeapon(w, itemInHand.transform);
+			// 	cameraController.SetRecoilWeaponValue(w);
+			// 	itemInHand.SetItem((Item)obj);
+			// }
+			// ItemManager.currentItemInHand = itemInHand.GetItem();
 		}
 
 
 
 		void UseConsumable(Consumable item)
 		{
+
 			vitalController.SetHunger(GetFloat("Hunger") + item.hungerGain);
 			vitalController.SetStamina(GetFloat("Stamina") + item.staminaGain);
 			vitalController.SetHealth(GetFloat("Health") + item.healthGain);
 			vitalController.SetThirst(GetFloat("Thirst") + item.thirstGain);
 		}
 
-		void EquipItem(Item item)
+		public void EquipItem(Item item)
 		{
+			UnequipItem();
+
+			if (item == null) {
+				itemInHand.SetItem(item);
+				return;
+			}
+
 			if (item is Weapon)
 			{
 				Weapon weapon = (Weapon) item;
@@ -228,14 +252,15 @@ namespace Game
 				cameraController.SetRecoilWeaponValue(weapon);
 			} else
 			{
-				ItemManager.EquipItem(item, itemInHand.transform);
+				ItemManager.EquipItemInHand(item, itemInHand.transform);
 			}
+
 			itemInHand.SetItem(item);
 		}
 
-		void UnequipItem()
+		public void UnequipItem()
 		{
-			if (itemInHand.GetItem() == null) return;
+			if (itemInHand.GetItem() == null) { return; }
 
 			if (itemInHand.GetItem() is Weapon)
 			{
@@ -247,6 +272,7 @@ namespace Game
 
 
 		}
+
 
 
 

@@ -27,10 +27,15 @@ namespace Game
 		public delegate void ManageItem(Item item);
 		public static ManageItem OnUseItem;
 		public static ManageItem OnDropItem;
+		public static ManageItem OnEquipItem;
 
 
-		public delegate void ManageQuickItemSlot(Item item, InventoryPanelButtonGroup.ButtonId buttonId);
-		public static ManageQuickItemSlot OnUpdateQuickItemSlot;
+		public delegate void QuickSlot();
+		public static QuickSlot OnEquip; // called when primary / secondary button are clicked
+
+		public delegate void ManageQuickSlotItem(Item item);
+		public static ManageQuickSlotItem OnQuickSlotPressed; // called when the user clicks on the quick slot icons
+
 
 
 		public delegate void ManageWeapon(Weapon weapon);

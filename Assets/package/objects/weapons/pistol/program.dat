@@ -3,7 +3,7 @@ Type:Weapon
 Name:Pistol
 Quantity:0
 Description:Smooth like a butter!
-
+AnimationLayer:2
 Location:prefab/objects/weapons/pistol
 
 Damage:25
@@ -13,3 +13,4 @@ RecoilSpeed:40
 ForwardRecoilMult:0.00017
 UpwardRecoilMult:.54
 Noise:5
+AimFOV:60

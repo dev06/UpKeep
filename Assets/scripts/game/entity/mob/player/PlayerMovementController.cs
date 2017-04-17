@@ -48,7 +48,7 @@ namespace Game
 
 		public void Jump()
 		{
-			if (DebugController.DEBUG_MODE) return;
+			if (DebugController.DEBUG_MODE) { return; }
 			PrepareJump();
 		}
 
@@ -81,18 +81,20 @@ namespace Game
 			movement.x = gameInputManager.input.move.x * Time.deltaTime * this.speed;
 			movement.y = jumpForce * Physics.gravity.y * Time.deltaTime * fallingAccleration;
 			movement.z = gameInputManager.input.move.y * Time.deltaTime * this.speed;
-			if (freeze) return new Vector3(0, movement.y, 0);
+			if (freeze) { return new Vector3(0, movement.y, 0); }
 			isMoving = Mathf.Abs(movement.x) > 0 || Mathf.Abs(movement.z) > 0;
-
-			if (player.gameInputManager.GetKeyDown(GameInputManager.SPRINT_KEYCODE) && player.GetFloat("Stamina") > 0 && IsMoving())	isSprinting = true;
-			if (player.GetFloat("Stamina") <= 0 || player.gameInputManager.GetKeyUp(GameInputManager.SPRINT_KEYCODE)) isSprinting = false;
+			if (player.gameInputManager.GetKeyDown(GameInputManager.SPRINT_KEYCODE) && player.GetFloat("Stamina") > 0 && IsMoving() && !IsAirborne())
+			{
+				isSprinting = true;
+			}
+			if (player.GetFloat("Stamina") <= 0 || player.gameInputManager.GetKeyUp(GameInputManager.SPRINT_KEYCODE) || !IsMoving()) { isSprinting = false; }
 
 			return movement;
 		}
 
 		public void BobCamera()
 		{
-			if (cameraController == null) return;
+			if (cameraController == null) { return; }
 			if (IsMoving())
 			{
 				cameraController.Bob(1.0f);
@@ -125,7 +127,7 @@ namespace Game
 
 		public bool IsAirborne()
 		{
-			if (characterController == null) return false;
+			if (characterController == null) { return false; }
 			return !characterController.isGrounded;
 		}
 
