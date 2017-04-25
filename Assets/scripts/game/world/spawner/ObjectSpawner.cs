@@ -31,6 +31,8 @@ public class ObjectSpawner : MonoBehaviour
 		float frequency = spawnFrequency == SpawnFrequency.AlwaysSpawn ? 1 : Random.Range(0f, 1f);
 		float value = .5f;
 
+
+
 		if (frequency >= value)
 		{
 			int randomValue =  Random.Range(0, ObjectDatabase.objectList.Count);
@@ -58,17 +60,9 @@ public class ObjectSpawner : MonoBehaviour
 				}
 			}
 
+		} else
+		{
+			Destroy(gameObject);
 		}
-	}
-
-
-	Vector3 GetLocationOffset(Vector3 position)
-	{
-		Vector3 offset = position;
-		float x = Random.Range(-.5f, .5f);
-		float z = Random.Range(-.5f, .5f);
-
-		offset += new Vector3(x, 0, z);
-		return offset;
 	}
 }

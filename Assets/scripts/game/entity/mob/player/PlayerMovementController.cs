@@ -18,12 +18,13 @@ namespace Game
 		private Player player;
 		private GameInputManager gameInputManager;
 		private Vector3 movement;
-		private float jumpForce = 1f;
-		private float jumpingHeight = .8f;
-		private bool isMoving;
-		private bool isJumping;
+		private bool freeze;
 		private bool isSprinting;
-		private float fallingDamageMultiplier = 2.0f;
+		private bool isJumping;
+		private bool isMoving;
+		private float jumpForce 											= 1.0f;
+		private float jumpingHeight 										= 0.8f;
+		private float fallingDamageMultiplier 								= 2.0f;
 		private float fallingAccleration;
 		private float fallingTimer;
 		private float fallingDamage;
@@ -31,7 +32,7 @@ namespace Game
 		private float walkingSpeed;
 		private float sprintingSpeed;
 		private float gravity;
-		private bool freeze;
+
 		public void Initialize()
 		{
 			player = GetComponent<Player>();

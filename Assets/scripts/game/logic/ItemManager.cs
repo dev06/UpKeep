@@ -23,6 +23,8 @@ namespace Game
 			{
 				EventManager.OnEquipItem(item);
 			}
+
+
 		}
 
 
@@ -38,6 +40,8 @@ namespace Game
 			{
 				EventManager.OnDropItem(item);
 			}
+
+
 		}
 
 
@@ -51,6 +55,8 @@ namespace Game
 			{
 				EventManager.OnUseItem(item);
 			}
+
+
 
 		}
 

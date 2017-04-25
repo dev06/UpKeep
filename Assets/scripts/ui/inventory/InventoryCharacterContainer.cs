@@ -133,6 +133,17 @@ namespace UI
 				{
 					quickSlots[i].SetItem(null);
 				}
+
+				if (item.objectQuantity <= 0)
+				{
+					if (quickSlots[i].GetItem() != null && item != null)
+					{
+						if (quickSlots[i].GetItem().objectID == item.objectID)
+						{
+							quickSlots[i].SetItem(null);
+						}
+					}
+				}
 			}
 			buttonGroup.UpdateText();
 			actionContainer.UpdateItemUseContainer(QuickSlot.ActiveSlot.GetItem());
@@ -150,7 +161,7 @@ namespace UI
 				{
 					if (quickSlots[i].GetItem() == null) { continue; }
 
-					if (item.objectQuantity > 1)
+					if (item.objectQuantity >= 1)
 					{
 						if (quickSlots[i].GetItem().objectID == item.objectID && quickSlots[i] == QuickSlot.ActiveSlot)
 						{

@@ -112,6 +112,15 @@ namespace UpkeepInput
 				StateManager.Instance.SetState(StateManager.Instance.state == StateManager.State.DEBUG ? StateManager.State.GAME : StateManager.State.DEBUG);
 			}
 
+
+			if (UnityEngine.Input.GetKeyDown(GameInputManager.DROPITEM_KEYCODE))
+			{
+				if (ItemManager.currentItemInHand != null)
+				{
+					ItemManager.DropItem(ItemManager.currentItemInHand);
+				}
+			}
+
 		}
 
 		public bool GetMouseButton(int mouse)

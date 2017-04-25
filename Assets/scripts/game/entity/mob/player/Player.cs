@@ -210,6 +210,7 @@ namespace Game
 
 
 			itemInHand.SetItem(null);
+			ItemManager.currentItemInHand = itemInHand.GetItem();
 		}
 
 		void OnObjectPickup(Game.Object obj)
@@ -222,7 +223,8 @@ namespace Game
 			// 	cameraController.SetRecoilWeaponValue(w);
 			// 	itemInHand.SetItem((Item)obj);
 			// }
-			// ItemManager.currentItemInHand = itemInHand.GetItem();
+
+			//ItemManager.currentItemInHand = itemInHand.GetItem();
 		}
 
 
@@ -256,10 +258,14 @@ namespace Game
 			}
 
 			itemInHand.SetItem(item);
+			ItemManager.currentItemInHand = item;
+
+
 		}
 
 		public void UnequipItem()
 		{
+			ItemManager.currentItemInHand = itemInHand.GetItem();
 			if (itemInHand.GetItem() == null) { return; }
 
 			if (itemInHand.GetItem() is Weapon)
